@@ -1,0 +1,33 @@
+# IDE
+.vscode/
+
+# Build directories (any project folder)
+**/build/
+**/cmake-build*/
+**/CMakeFiles/
+**/Testing/
+
+# CMake generated files
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/compile_commands.json
+**/CTestTestfile.cmake
+**/install_manifest.txt
+**/Makefile
+
+# Object files and dependency files
+**/*.o
+**/*.obj
+**/*.lo
+**/*.d
+
+# Binaries and libraries
+**/*.exe
+**/*.out
+**/*.app
+**/*.a
+**/*.so
+**/*.so.*
+**/*.dylib
+**/*.dll
+

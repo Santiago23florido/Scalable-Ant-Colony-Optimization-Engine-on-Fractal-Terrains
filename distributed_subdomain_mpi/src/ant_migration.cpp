@@ -138,11 +138,11 @@ int process_local_ant(const DomainDecomposition& decomp, const StepContext& ctx,
                 }
             }
         } else {
-            if (p_left >= max_phen) {
+            if (p_left == max_phen) {
                 new_x -= 1;
-            } else if (p_right >= max_phen) {
+            } else if (p_right == max_phen) {
                 new_x += 1;
-            } else if (p_up >= max_phen) {
+            } else if (p_up == max_phen) {
                 new_y -= 1;
             } else {
                 new_y += 1;
@@ -230,11 +230,11 @@ int process_single_ant(const DomainDecomposition& decomp, const StepContext& ctx
                 }
             }
         } else {
-            if (p_left >= max_phen) {
+            if (p_left == max_phen) {
                 new_x -= 1;
-            } else if (p_right >= max_phen) {
+            } else if (p_right == max_phen) {
                 new_x += 1;
-            } else if (p_up >= max_phen) {
+            } else if (p_up == max_phen) {
                 new_y -= 1;
             } else {
                 new_y += 1;

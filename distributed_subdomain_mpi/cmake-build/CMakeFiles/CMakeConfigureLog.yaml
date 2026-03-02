@@ -359,3 +359,73 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_0bc32/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_0bc32.dir/build.make CMakeFiles/cmTC_0bc32.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ'
+        Building CXX object CMakeFiles/cmTC_0bc32.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_0bc32.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ/test_mpi.cpp
+        Linking CXX executable cmTC_0bc32
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0bc32.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_0bc32.dir/test_mpi.cpp.o -o cmTC_0bc32 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-yVtlmJ'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_bc22f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_bc22f.dir/build.make CMakeFiles/cmTC_bc22f.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S'
+        Building CXX object CMakeFiles/cmTC_bc22f.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_bc22f.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S/test_mpi.cpp
+        Linking CXX executable cmTC_bc22f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bc22f.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_bc22f.dir/test_mpi.cpp.o -o cmTC_bc22f 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-zBC07S'
+        
+      exitCode: 0
+...

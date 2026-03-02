@@ -71,8 +71,7 @@ volatile std::sig_atomic_t g_stop_requested = 0;
 
 void on_termination_signal(int) { g_stop_requested = 1; }
 
-static double elapsed_ms(const std::chrono::steady_clock::time_point& start,
-                         const std::chrono::steady_clock::time_point& end) {
+static double elapsed_ms(const std::chrono::steady_clock::time_point& start, const std::chrono::steady_clock::time_point& end) {
     return std::chrono::duration<double, std::milli>(end - start).count();
 }
 
@@ -160,24 +159,7 @@ static void write_summary_metric(std::ostream& out, const std::string& metric_na
         << stats.max << "\n";
 }
 
-static bool write_summary_csv_file(const std::string& summary_csv_path,
-                                   const running_stats& event_stats,
-                                   const running_stats& ants_stats,
-                                   const running_stats& evaporation_stats,
-                                   const running_stats& update_stats,
-                                   const running_stats& advance_total_stats,
-                                   const running_stats& render_stats,
-                                   const running_stats& blit_stats,
-                                   const running_stats& iteration_total_stats,
-                                   const running_stats& mpi_halo_stats,
-                                   const running_stats& mpi_migration_stats,
-                                   const running_stats& mpi_food_allreduce_stats,
-                                   const running_stats& mpi_render_comm_stats,
-                                   const running_stats& mpi_total_comm_stats,
-                                   std::size_t it,
-                                   std::size_t measured_iterations,
-                                   std::uint64_t food_quantity,
-                                   std::size_t first_food_iteration) {
+static bool write_summary_csv_file(const std::string& summary_csv_path, const running_stats& event_stats, const running_stats& ants_stats, const running_stats& evaporation_stats, const running_stats& update_stats, const running_stats& advance_total_stats, const running_stats& render_stats, const running_stats& blit_stats, const running_stats& iteration_total_stats, const running_stats& mpi_halo_stats, const running_stats& mpi_migration_stats, const running_stats& mpi_food_allreduce_stats, const running_stats& mpi_render_comm_stats, const running_stats& mpi_total_comm_stats, std::size_t it, std::size_t measured_iterations, std::uint64_t food_quantity, std::size_t first_food_iteration) {
     if (summary_csv_path.empty()) {
         return true;
     }
@@ -241,9 +223,7 @@ static int offset_for_coord(int global_n, int dims_n, int coord) {
     return coord * base + std::min(coord, rem);
 }
 
-static void extract_local_interior(const mpi_subdomain::DomainDecomposition& decomp,
-                                   const std::vector<double>& halo_field,
-                                   std::vector<double>& dense_field) {
+static void extract_local_interior(const mpi_subdomain::DomainDecomposition& decomp, const std::vector<double>& halo_field, std::vector<double>& dense_field) {
     dense_field.assign(static_cast<std::size_t>(decomp.local_nx * decomp.local_ny), 0.0);
 
     for (int ly = 0; ly < decomp.local_ny; ++ly) {
@@ -254,10 +234,7 @@ static void extract_local_interior(const mpi_subdomain::DomainDecomposition& dec
     }
 }
 
-static void unpack_rank_packed_field(const mpi_subdomain::DomainDecomposition& decomp,
-                                     const std::vector<int>& displs,
-                                     const std::vector<double>& packed_field,
-                                     std::vector<double>& global_dense) {
+static void unpack_rank_packed_field(const mpi_subdomain::DomainDecomposition& decomp, const std::vector<int>& displs, const std::vector<double>& packed_field, std::vector<double>& global_dense) {
     global_dense.assign(static_cast<std::size_t>(decomp.global_nx * decomp.global_ny), 0.0);
 
     for (int r = 0; r < decomp.size; ++r) {
@@ -284,19 +261,11 @@ static void unpack_rank_packed_field(const mpi_subdomain::DomainDecomposition& d
     }
 }
 
-static void gather_state_for_render(const mpi_subdomain::DomainDecomposition& decomp,
-                                    const std::vector<int>& gather_counts,
-                                    const std::vector<int>& gather_displs,
-                                    const std::vector<double>& cur_v1,
-                                    const std::vector<double>& cur_v2,
-                                    const AntSystem& local_ants,
-                                    pheronome* render_phen,
-                                    AntSystem* render_ants,
-                                    MPI_Comm comm) {
+static void gather_state_for_render(const mpi_subdomain::DomainDecomposition& decomp, const std::vector<int>& gather_counts, const std::vector<int>& gather_displs, const pheronome& local_phen, const AntSystem& local_ants, pheronome* render_phen, AntSystem* render_ants, MPI_Comm comm) {
     std::vector<double> local_dense_v1;
     std::vector<double> local_dense_v2;
-    extract_local_interior(decomp, cur_v1, local_dense_v1);
-    extract_local_interior(decomp, cur_v2, local_dense_v2);
+    extract_local_interior(decomp, local_phen.current_channel(0), local_dense_v1);
+    extract_local_interior(decomp, local_phen.current_channel(1), local_dense_v2);
 
     std::vector<double> packed_v1;
     std::vector<double> packed_v2;
@@ -392,11 +361,12 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    const int nb_ants = 5000;
+    const int ants_per_rank = 1250;
     const double eps = 0.8;
     const double alpha = 0.7;
     const double beta = 0.999;
-    const std::size_t seed = 2026;
+    const std::size_t land_seed = 1024;
+    const std::size_t ants_seed = 2026;
 
     const position_t pos_nest{256, 256};
     const position_t pos_food{500, 500};
@@ -405,7 +375,7 @@ int main(int argc, char* argv[]) {
     int global_dim = 0;
 
     if (world_rank == 0) {
-        global_land = std::make_unique<fractal_land>(8, 2, 1.0, static_cast<int>(seed));
+        global_land = std::make_unique<fractal_land>(8, 2, 1.0, static_cast<int>(land_seed));
         global_land->normalize_land();
         global_dim = static_cast<int>(global_land->dimensions());
     }
@@ -415,6 +385,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm comm = MPI_COMM_NULL;
     const auto decomp = mpi_subdomain::map_decomposed(global_dim, global_dim, world_comm, comm);
     const int rank = decomp.rank;
+    const int nb_ants = ants_per_rank * decomp.size;
 
     const std::vector<int> gather_counts = decomp.gather_counts_cells();
     const std::vector<int> gather_displs = decomp.gather_displs_cells();
@@ -450,29 +421,13 @@ int main(int argc, char* argv[]) {
 
     mpi_subdomain::exchange_static_halos(decomp, terrain, cell_type, comm);
 
-    std::vector<double> cur_v1(decomp.halo_size(), 0.0);
-    std::vector<double> cur_v2(decomp.halo_size(), 0.0);
-    std::vector<double> next_v1(decomp.halo_size(), 0.0);
-    std::vector<double> next_v2(decomp.halo_size(), 0.0);
-
-    if (decomp.owns_global(pos_food.x, pos_food.y)) {
-        const int lx = decomp.local_x_from_global(pos_food.x);
-        const int ly = decomp.local_y_from_global(pos_food.y);
-        cur_v1[decomp.idx(lx, ly)] = 1.0;
-    }
-    if (decomp.owns_global(pos_nest.x, pos_nest.y)) {
-        const int lx = decomp.local_x_from_global(pos_nest.x);
-        const int ly = decomp.local_y_from_global(pos_nest.y);
-        cur_v2[decomp.idx(lx, ly)] = 1.0;
-    }
-
-    mpi_subdomain::set_horizontal_boundary_ghosts(decomp, cur_v1, cur_v2, -1.0);
-    mpi_subdomain::exchange_pheromone_halos(decomp, cur_v1, cur_v2, comm);
+    pheronome local_phen(decomp, pos_food, pos_nest, alpha, beta);
+    mpi_subdomain::exchange_pheromone_halos(decomp, local_phen.current_channel(0), local_phen.current_channel(1), comm);
 
     AntSystem::set_exploration_coef(eps);
 
     AntSystem ants;
-    mpi_subdomain::distribute_initial_ants(decomp, nb_ants, seed, ants, comm);
+    mpi_subdomain::distribute_initial_ants(decomp, nb_ants, ants_seed, ants, comm);
 
     std::unique_ptr<Window> win;
     std::unique_ptr<pheronome> render_phen;
@@ -577,14 +532,13 @@ int main(int argc, char* argv[]) {
         double halo_ms_local = 0.0;
         {
             const double t0 = MPI_Wtime();
-            mpi_subdomain::exchange_pheromone_halos(decomp, cur_v1, cur_v2, comm);
+            mpi_subdomain::exchange_pheromone_halos(decomp, local_phen.current_channel(0), local_phen.current_channel(1), comm);
             halo_ms_local = (MPI_Wtime() - t0) * 1000.0;
         }
 
-        next_v1 = cur_v1;
-        next_v2 = cur_v2;
+        local_phen.copy_current_to_buffer();
 
-        mpi_subdomain::StepContext step_ctx{terrain, cur_v1, cur_v2, next_v1, next_v2, pos_food, pos_nest, alpha, eps};
+        mpi_subdomain::StepContext step_ctx{terrain, local_phen.current_channel(0), local_phen.current_channel(1), local_phen.buffer_channel(0), local_phen.buffer_channel(1), pos_food, pos_nest, alpha, eps};
 
         const auto step_result = mpi_subdomain::advance_ants_with_migration(decomp, step_ctx, ants, comm);
         const double ants_ms_local = step_result.move_local_time * 1000.0;
@@ -596,8 +550,8 @@ int main(int argc, char* argv[]) {
             for (int ly = 1; ly <= decomp.local_ny; ++ly) {
                 for (int lx = 1; lx <= decomp.local_nx; ++lx) {
                     const std::size_t idx = decomp.idx(lx, ly);
-                    next_v1[idx] *= beta;
-                    next_v2[idx] *= beta;
+                    local_phen.buffer_channel(0)[idx] *= beta;
+                    local_phen.buffer_channel(1)[idx] *= beta;
                 }
             }
             evaporation_ms_local = (MPI_Wtime() - t0) * 1000.0;
@@ -609,17 +563,16 @@ int main(int argc, char* argv[]) {
             if (decomp.owns_global(pos_food.x, pos_food.y)) {
                 const int lx = decomp.local_x_from_global(pos_food.x);
                 const int ly = decomp.local_y_from_global(pos_food.y);
-                next_v1[decomp.idx(lx, ly)] = 1.0;
+                local_phen.buffer_channel(0)[decomp.idx(lx, ly)] = 1.0;
             }
             if (decomp.owns_global(pos_nest.x, pos_nest.y)) {
                 const int lx = decomp.local_x_from_global(pos_nest.x);
                 const int ly = decomp.local_y_from_global(pos_nest.y);
-                next_v2[decomp.idx(lx, ly)] = 1.0;
+                local_phen.buffer_channel(1)[decomp.idx(lx, ly)] = 1.0;
             }
 
-            cur_v1.swap(next_v1);
-            cur_v2.swap(next_v2);
-            mpi_subdomain::set_horizontal_boundary_ghosts(decomp, cur_v1, cur_v2, -1.0);
+            local_phen.swap_current_with_buffer();
+            local_phen.set_current_physical_ghosts(-1.0);
             update_ms_local = (MPI_Wtime() - t0) * 1000.0;
         }
 
@@ -638,7 +591,7 @@ int main(int argc, char* argv[]) {
         double render_comm_ms_local = 0.0;
         if (!opts.headless) {
             const double t0 = MPI_Wtime();
-            gather_state_for_render(decomp, gather_counts, gather_displs, cur_v1, cur_v2, ants, (rank == 0) ? render_phen.get() : nullptr, (rank == 0) ? render_ants.get() : nullptr, comm);
+            gather_state_for_render(decomp, gather_counts, gather_displs, local_phen, ants, (rank == 0) ? render_phen.get() : nullptr, (rank == 0) ? render_ants.get() : nullptr, comm);
             render_comm_ms_local = (MPI_Wtime() - t0) * 1000.0;
         }
 

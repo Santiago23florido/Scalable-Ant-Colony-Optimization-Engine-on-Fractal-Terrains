@@ -31,16 +31,14 @@ void AntSystem::add_ant(const position_t& pos, std::size_t seed, std::uint8_t st
     m_seed.push_back(seed);
 }
 
-void AntSystem::advance_all(pheronome& phen, const fractal_land& land, const position_t& pos_food,
-                            const position_t& pos_nest, std::size_t& food_counter) {
+void AntSystem::advance_all(pheronome& phen, const fractal_land& land, const position_t& pos_food, const position_t& pos_nest, std::size_t& food_counter) {
     const std::size_t ant_count = size();
     for (std::size_t i = 0; i < ant_count; ++i) {
         advance_one(i, phen, land, pos_food, pos_nest, food_counter);
     }
 }
 
-void AntSystem::advance_one(std::size_t idx, pheronome& phen, const fractal_land& land, const position_t& pos_food,
-                            const position_t& pos_nest, std::size_t& food_counter) {
+void AntSystem::advance_one(std::size_t idx, pheronome& phen, const fractal_land& land, const position_t& pos_food, const position_t& pos_nest, std::size_t& food_counter) {
     int x = m_pos_x[idx];
     int y = m_pos_y[idx];
     std::uint8_t state = m_state[idx];
@@ -60,10 +58,10 @@ void AntSystem::advance_one(std::size_t idx, pheronome& phen, const fractal_land
         int new_y = old_y;
         std::size_t new_flat = old_flat;
 
-        const double left = phen.value(old_flat - stride, ind_pher);
-        const double right = phen.value(old_flat + stride, ind_pher);
-        const double up = phen.value(old_flat - 1, ind_pher);
-        const double down = phen.value(old_flat + 1, ind_pher);
+        const double left = phen.value(old_flat - 1, ind_pher);
+        const double right = phen.value(old_flat + 1, ind_pher);
+        const double up = phen.value(old_flat - stride, ind_pher);
+        const double down = phen.value(old_flat + stride, ind_pher);
         const double max_phen = std::max({left, right, up, down});
 
         if ((choice > m_eps) || (max_phen <= 0.0)) {
@@ -80,16 +78,16 @@ void AntSystem::advance_one(std::size_t idx, pheronome& phen, const fractal_land
         } else {
             if (left == max_phen) {
                 new_x -= 1;
-                new_flat = old_flat - stride;
+                new_flat = old_flat - 1;
             } else if (right == max_phen) {
                 new_x += 1;
-                new_flat = old_flat + stride;
+                new_flat = old_flat + 1;
             } else if (up == max_phen) {
                 new_y -= 1;
-                new_flat = old_flat - 1;
+                new_flat = old_flat - stride;
             } else {
                 new_y += 1;
-                new_flat = old_flat + 1;
+                new_flat = old_flat + stride;
             }
         }
 

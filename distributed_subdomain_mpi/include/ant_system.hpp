@@ -29,12 +29,10 @@ public:
 
     static void set_exploration_coef(double eps) { m_eps = eps; }
 
-    void advance_all(pheronome& phen, const fractal_land& land, const position_t& pos_food, const position_t& pos_nest,
-                     std::size_t& food_counter);
+    void advance_all(pheronome& phen, const fractal_land& land, const position_t& pos_food, const position_t& pos_nest, std::size_t& food_counter);
 
 private:
-    void advance_one(std::size_t idx, pheronome& phen, const fractal_land& land, const position_t& pos_food,
-                     const position_t& pos_nest, std::size_t& food_counter);
+    void advance_one(std::size_t idx, pheronome& phen, const fractal_land& land, const position_t& pos_food, const position_t& pos_nest, std::size_t& food_counter);
 
     static double m_eps;
     std::vector<int> m_pos_x;
