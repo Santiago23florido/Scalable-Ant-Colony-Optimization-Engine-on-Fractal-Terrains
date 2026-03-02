@@ -429,3 +429,38 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_caea3/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_caea3.dir/build.make CMakeFiles/cmTC_caea3.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P'
+        Building CXX object CMakeFiles/cmTC_caea3.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_caea3.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P/test_mpi.cpp
+        Linking CXX executable cmTC_caea3
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_caea3.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_caea3.dir/test_mpi.cpp.o -o cmTC_caea3 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-Tihb0P'
+        
+      exitCode: 0
+...

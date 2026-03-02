@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2
 
-CXX_FLAGS = -std=c++17 -Wall -Wextra -Wpedantic
+CXX_FLAGS = -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic
 

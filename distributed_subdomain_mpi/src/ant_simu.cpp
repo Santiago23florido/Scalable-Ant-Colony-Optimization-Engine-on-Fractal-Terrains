@@ -422,6 +422,7 @@ int main(int argc, char* argv[]) {
     mpi_subdomain::exchange_static_halos(decomp, terrain, cell_type, comm);
 
     pheronome local_phen(decomp, pos_food, pos_nest, alpha, beta);
+    mpi_subdomain::PheromoneHaloExchange halo_exchange_state;
     mpi_subdomain::exchange_pheromone_halos(decomp, local_phen.current_channel(0), local_phen.current_channel(1), comm);
 
     AntSystem::set_exploration_coef(eps);
@@ -532,11 +533,11 @@ int main(int argc, char* argv[]) {
         double halo_ms_local = 0.0;
         {
             const double t0 = MPI_Wtime();
-            mpi_subdomain::exchange_pheromone_halos(decomp, local_phen.current_channel(0), local_phen.current_channel(1), comm);
+            mpi_subdomain::begin_pheromone_halo_exchange(decomp, local_phen.current_channel(0), local_phen.current_channel(1), halo_exchange_state, comm);
+            local_phen.copy_current_to_buffer();
+            mpi_subdomain::end_pheromone_halo_exchange(decomp, local_phen.current_channel(0), local_phen.current_channel(1), halo_exchange_state);
             halo_ms_local = (MPI_Wtime() - t0) * 1000.0;
         }
-
-        local_phen.copy_current_to_buffer();
 
         mpi_subdomain::StepContext step_ctx{terrain, local_phen.current_channel(0), local_phen.current_channel(1), local_phen.buffer_channel(0), local_phen.buffer_channel(1), pos_food, pos_nest, alpha, eps};
 

@@ -11,6 +11,10 @@ constexpr int TAG_DIR_UP = 0;
 constexpr int TAG_DIR_DOWN = 1;
 constexpr int TAG_DIR_LEFT = 2;
 constexpr int TAG_DIR_RIGHT = 3;
+constexpr int TAG_PACKED_UP = 740;
+constexpr int TAG_PACKED_DOWN = 741;
+constexpr int TAG_PACKED_LEFT = 742;
+constexpr int TAG_PACKED_RIGHT = 743;
 
 // Fill one local row in a double field (decomp: local geometry/indexing, field: mutable buffer, local_y: row id, value: constant to write).
 void fill_row_double(const DomainDecomposition& decomp, std::vector<double>& field, int local_y, double value) {
@@ -228,11 +232,110 @@ void set_horizontal_boundary_ghosts(const DomainDecomposition& decomp, std::vect
     }
 }
 
-// Exchange halos for both pheromone channels and then apply physical-border ghosts (decomp: neighborhood/layout, v1/v2: halo-padded channels, comm: Cartesian communicator).
+void begin_pheromone_halo_exchange(const DomainDecomposition& decomp, const std::vector<double>& v1, const std::vector<double>& v2, PheromoneHaloExchange& exchange, MPI_Comm comm) {
+    const int packed_nx = 2 * decomp.local_nx;
+    const int packed_ny = 2 * decomp.local_ny;
+    exchange.send_up.assign(static_cast<std::size_t>(packed_nx), -1.0);
+    exchange.send_down.assign(static_cast<std::size_t>(packed_nx), -1.0);
+    exchange.send_left.assign(static_cast<std::size_t>(packed_ny), -1.0);
+    exchange.send_right.assign(static_cast<std::size_t>(packed_ny), -1.0);
+    exchange.recv_up.assign(static_cast<std::size_t>(packed_nx), -1.0);
+    exchange.recv_down.assign(static_cast<std::size_t>(packed_nx), -1.0);
+    exchange.recv_left.assign(static_cast<std::size_t>(packed_ny), -1.0);
+    exchange.recv_right.assign(static_cast<std::size_t>(packed_ny), -1.0);
+
+    if (decomp.local_nx > 0 && decomp.local_ny > 0) {
+        for (int lx = 1; lx <= decomp.local_nx; ++lx) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (lx - 1));
+            exchange.send_up[packed_idx] = v1[decomp.idx(lx, 1)];
+            exchange.send_up[packed_idx + 1] = v2[decomp.idx(lx, 1)];
+            exchange.send_down[packed_idx] = v1[decomp.idx(lx, decomp.local_ny)];
+            exchange.send_down[packed_idx + 1] = v2[decomp.idx(lx, decomp.local_ny)];
+        }
+        for (int ly = 1; ly <= decomp.local_ny; ++ly) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (ly - 1));
+            exchange.send_left[packed_idx] = v1[decomp.idx(1, ly)];
+            exchange.send_left[packed_idx + 1] = v2[decomp.idx(1, ly)];
+            exchange.send_right[packed_idx] = v1[decomp.idx(decomp.local_nx, ly)];
+            exchange.send_right[packed_idx + 1] = v2[decomp.idx(decomp.local_nx, ly)];
+        }
+    }
+
+    exchange.request_count = 0;
+    if (decomp.up_rank != MPI_PROC_NULL && packed_nx > 0) {
+        MPI_Irecv(exchange.recv_up.data(), packed_nx, MPI_DOUBLE, decomp.up_rank, TAG_PACKED_DOWN, comm, &exchange.requests[exchange.request_count++]);
+        MPI_Isend(exchange.send_up.data(), packed_nx, MPI_DOUBLE, decomp.up_rank, TAG_PACKED_UP, comm, &exchange.requests[exchange.request_count++]);
+    }
+    if (decomp.down_rank != MPI_PROC_NULL && packed_nx > 0) {
+        MPI_Irecv(exchange.recv_down.data(), packed_nx, MPI_DOUBLE, decomp.down_rank, TAG_PACKED_UP, comm, &exchange.requests[exchange.request_count++]);
+        MPI_Isend(exchange.send_down.data(), packed_nx, MPI_DOUBLE, decomp.down_rank, TAG_PACKED_DOWN, comm, &exchange.requests[exchange.request_count++]);
+    }
+    if (decomp.left_rank != MPI_PROC_NULL && packed_ny > 0) {
+        MPI_Irecv(exchange.recv_left.data(), packed_ny, MPI_DOUBLE, decomp.left_rank, TAG_PACKED_RIGHT, comm, &exchange.requests[exchange.request_count++]);
+        MPI_Isend(exchange.send_left.data(), packed_ny, MPI_DOUBLE, decomp.left_rank, TAG_PACKED_LEFT, comm, &exchange.requests[exchange.request_count++]);
+    }
+    if (decomp.right_rank != MPI_PROC_NULL && packed_ny > 0) {
+        MPI_Irecv(exchange.recv_right.data(), packed_ny, MPI_DOUBLE, decomp.right_rank, TAG_PACKED_LEFT, comm, &exchange.requests[exchange.request_count++]);
+        MPI_Isend(exchange.send_right.data(), packed_ny, MPI_DOUBLE, decomp.right_rank, TAG_PACKED_RIGHT, comm, &exchange.requests[exchange.request_count++]);
+    }
+}
+
+void end_pheromone_halo_exchange(const DomainDecomposition& decomp, std::vector<double>& v1, std::vector<double>& v2, PheromoneHaloExchange& exchange, double boundary_value) {
+    if (exchange.request_count > 0) {
+        MPI_Waitall(exchange.request_count, exchange.requests.data(), MPI_STATUSES_IGNORE);
+    }
+
+    if (decomp.up_rank == MPI_PROC_NULL || decomp.local_nx == 0 || decomp.local_ny == 0) {
+        fill_row_double(decomp, v1, 0, boundary_value);
+        fill_row_double(decomp, v2, 0, boundary_value);
+    } else {
+        for (int lx = 1; lx <= decomp.local_nx; ++lx) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (lx - 1));
+            v1[decomp.idx(lx, 0)] = exchange.recv_up[packed_idx];
+            v2[decomp.idx(lx, 0)] = exchange.recv_up[packed_idx + 1];
+        }
+    }
+
+    if (decomp.down_rank == MPI_PROC_NULL || decomp.local_nx == 0 || decomp.local_ny == 0) {
+        fill_row_double(decomp, v1, decomp.local_ny + 1, boundary_value);
+        fill_row_double(decomp, v2, decomp.local_ny + 1, boundary_value);
+    } else {
+        for (int lx = 1; lx <= decomp.local_nx; ++lx) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (lx - 1));
+            v1[decomp.idx(lx, decomp.local_ny + 1)] = exchange.recv_down[packed_idx];
+            v2[decomp.idx(lx, decomp.local_ny + 1)] = exchange.recv_down[packed_idx + 1];
+        }
+    }
+
+    if (decomp.left_rank == MPI_PROC_NULL || decomp.local_nx == 0 || decomp.local_ny == 0) {
+        fill_col_double(decomp, v1, 0, boundary_value);
+        fill_col_double(decomp, v2, 0, boundary_value);
+    } else {
+        for (int ly = 1; ly <= decomp.local_ny; ++ly) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (ly - 1));
+            v1[decomp.idx(0, ly)] = exchange.recv_left[packed_idx];
+            v2[decomp.idx(0, ly)] = exchange.recv_left[packed_idx + 1];
+        }
+    }
+
+    if (decomp.right_rank == MPI_PROC_NULL || decomp.local_nx == 0 || decomp.local_ny == 0) {
+        fill_col_double(decomp, v1, decomp.local_nx + 1, boundary_value);
+        fill_col_double(decomp, v2, decomp.local_nx + 1, boundary_value);
+    } else {
+        for (int ly = 1; ly <= decomp.local_ny; ++ly) {
+            const std::size_t packed_idx = static_cast<std::size_t>(2 * (ly - 1));
+            v1[decomp.idx(decomp.local_nx + 1, ly)] = exchange.recv_right[packed_idx];
+            v2[decomp.idx(decomp.local_nx + 1, ly)] = exchange.recv_right[packed_idx + 1];
+        }
+    }
+
+    set_horizontal_boundary_ghosts(decomp, v1, v2, boundary_value);
+}
+
 void exchange_pheromone_halos(const DomainDecomposition& decomp, std::vector<double>& v1, std::vector<double>& v2, MPI_Comm comm) {
-    exchange_halo_double(decomp, v1, -1.0, comm, 700);
-    exchange_halo_double(decomp, v2, -1.0, comm, 710);
-    set_horizontal_boundary_ghosts(decomp, v1, v2, -1.0);
+    PheromoneHaloExchange exchange;
+    begin_pheromone_halo_exchange(decomp, v1, v2, exchange, comm);
+    end_pheromone_halo_exchange(decomp, v1, v2, exchange, -1.0);
 }
 
 // Exchange halos for static maps and clamp physical borders to obstacle/default values (decomp: neighborhood/layout, terrain: movement-cost map, cell_type: occupancy map, comm: Cartesian communicator).
