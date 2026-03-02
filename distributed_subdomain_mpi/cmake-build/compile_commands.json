@@ -1,49 +1,49 @@
 [
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_simu.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_simu.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_simu.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_simu.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_simu.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_simu.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_migration.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_migration.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_migration.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/fractal_land.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/fractal_land.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/fractal_land.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/halo.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/halo.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/halo.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/halo.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/halo.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/halo.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/renderer.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/renderer.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/renderer.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/renderer.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/renderer.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/renderer.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/subdomain.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/subdomain.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/subdomain.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/subdomain.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/subdomain.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/subdomain.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/window.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/window.cpp",
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/window.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/window.cpp",
   "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/window.cpp",
   "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/window.cpp.o"
 }

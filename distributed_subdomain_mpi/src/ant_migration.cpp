@@ -268,40 +268,58 @@ int process_single_ant(const DomainDecomposition& decomp, const StepContext& ctx
     return my_rank;
 }
 
-// Routes one migrant ant packet to the proper neighbor queue.
-void route_ant_packet(const DomainDecomposition& decomp, const TransitAnt& ant, int owner, std::vector<TransitAnt>& out_up, std::vector<TransitAnt>& out_down, std::vector<TransitAnt>& out_left, std::vector<TransitAnt>& out_right) {
+struct NeighborQueues {
+    std::vector<TransitAnt> up;
+    std::vector<TransitAnt> down;
+    std::vector<TransitAnt> left;
+    std::vector<TransitAnt> right;
+};
+
+void clear_neighbor_queues(NeighborQueues& queues) {
+    queues.up.clear();
+    queues.down.clear();
+    queues.left.clear();
+    queues.right.clear();
+}
+
+void reserve_neighbor_queues(NeighborQueues& queues, std::size_t cap) {
+    queues.up.reserve(cap);
+    queues.down.reserve(cap);
+    queues.left.reserve(cap);
+    queues.right.reserve(cap);
+}
+
+void route_ant_packet(const DomainDecomposition& decomp, const TransitAnt& ant, int owner, NeighborQueues& out) {
     if (owner == decomp.up_rank) {
-        out_up.push_back(ant);
+        out.up.push_back(ant);
     } else if (owner == decomp.down_rank) {
-        out_down.push_back(ant);
+        out.down.push_back(ant);
     } else if (owner == decomp.left_rank) {
-        out_left.push_back(ant);
+        out.left.push_back(ant);
     } else if (owner == decomp.right_rank) {
-        out_right.push_back(ant);
+        out.right.push_back(ant);
     } else if (owner != MPI_PROC_NULL) {
-        // Fallback routing for degenerate partitions with empty ranks.
         if (ant.x < decomp.offset_x) {
-            out_left.push_back(ant);
+            out.left.push_back(ant);
         } else if (ant.x >= decomp.offset_x + decomp.local_nx) {
-            out_right.push_back(ant);
+            out.right.push_back(ant);
         } else if (ant.y < decomp.offset_y) {
-            out_up.push_back(ant);
+            out.up.push_back(ant);
         } else {
-            out_down.push_back(ant);
+            out.down.push_back(ant);
         }
     }
 }
 
-// Exchanges migrant counts and packets with direct neighbors.
-void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, std::vector<TransitAnt>& send_up, std::vector<TransitAnt>& send_down, std::vector<TransitAnt>& send_left, std::vector<TransitAnt>& send_right, std::vector<TransitAnt>& received, MPI_Comm comm, double& time_acc) {
+void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, NeighborQueues& send, NeighborQueues& recv_by_dir, std::vector<TransitAnt>& received, MPI_Comm comm, double& time_acc) {
     int recv_count_up = 0;
     int recv_count_down = 0;
     int recv_count_left = 0;
     int recv_count_right = 0;
-    const int send_count_up = static_cast<int>(send_up.size());
-    const int send_count_down = static_cast<int>(send_down.size());
-    const int send_count_left = static_cast<int>(send_left.size());
-    const int send_count_right = static_cast<int>(send_right.size());
+    const int send_count_up = static_cast<int>(send.up.size());
+    const int send_count_down = static_cast<int>(send.down.size());
+    const int send_count_left = static_cast<int>(send.left.size());
+    const int send_count_right = static_cast<int>(send.right.size());
 
     const double t_mig_begin = MPI_Wtime();
 
@@ -327,35 +345,35 @@ void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, std::ve
         MPI_Waitall(req_count_n, req_count.data(), MPI_STATUSES_IGNORE);
     }
 
-    std::vector<TransitAnt> recv_up(static_cast<std::size_t>(recv_count_up));
-    std::vector<TransitAnt> recv_down(static_cast<std::size_t>(recv_count_down));
-    std::vector<TransitAnt> recv_left(static_cast<std::size_t>(recv_count_left));
-    std::vector<TransitAnt> recv_right(static_cast<std::size_t>(recv_count_right));
+    recv_by_dir.up.resize(static_cast<std::size_t>(recv_count_up));
+    recv_by_dir.down.resize(static_cast<std::size_t>(recv_count_down));
+    recv_by_dir.left.resize(static_cast<std::size_t>(recv_count_left));
+    recv_by_dir.right.resize(static_cast<std::size_t>(recv_count_right));
 
     std::array<MPI_Request, 8> req_data{};
     int req_data_n = 0;
     if (decomp.up_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_up.data(), recv_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Irecv(recv_by_dir.up.data(), recv_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.up_rank, TAG_MIGRATION_DATA_TO_DOWN, comm, &req_data[req_data_n++]);
-        MPI_Isend(send_up.data(), send_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Isend(send.up.data(), send_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.up_rank, TAG_MIGRATION_DATA_TO_UP, comm, &req_data[req_data_n++]);
     }
     if (decomp.down_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_down.data(), recv_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Irecv(recv_by_dir.down.data(), recv_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.down_rank, TAG_MIGRATION_DATA_TO_UP, comm, &req_data[req_data_n++]);
-        MPI_Isend(send_down.data(), send_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Isend(send.down.data(), send_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.down_rank, TAG_MIGRATION_DATA_TO_DOWN, comm, &req_data[req_data_n++]);
     }
     if (decomp.left_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_left.data(), recv_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Irecv(recv_by_dir.left.data(), recv_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.left_rank, TAG_MIGRATION_DATA_TO_RIGHT, comm, &req_data[req_data_n++]);
-        MPI_Isend(send_left.data(), send_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Isend(send.left.data(), send_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.left_rank, TAG_MIGRATION_DATA_TO_LEFT, comm, &req_data[req_data_n++]);
     }
     if (decomp.right_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_right.data(), recv_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Irecv(recv_by_dir.right.data(), recv_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.right_rank, TAG_MIGRATION_DATA_TO_LEFT, comm, &req_data[req_data_n++]);
-        MPI_Isend(send_right.data(), send_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
+        MPI_Isend(send.right.data(), send_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
                   decomp.right_rank, TAG_MIGRATION_DATA_TO_RIGHT, comm, &req_data[req_data_n++]);
     }
     if (req_data_n > 0) {
@@ -364,10 +382,10 @@ void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, std::ve
 
     received.clear();
     received.reserve(static_cast<std::size_t>(recv_count_up + recv_count_down + recv_count_left + recv_count_right));
-    received.insert(received.end(), recv_up.begin(), recv_up.end());
-    received.insert(received.end(), recv_down.begin(), recv_down.end());
-    received.insert(received.end(), recv_left.begin(), recv_left.end());
-    received.insert(received.end(), recv_right.begin(), recv_right.end());
+    received.insert(received.end(), recv_by_dir.up.begin(), recv_by_dir.up.end());
+    received.insert(received.end(), recv_by_dir.down.begin(), recv_by_dir.down.end());
+    received.insert(received.end(), recv_by_dir.left.begin(), recv_by_dir.left.end());
+    received.insert(received.end(), recv_by_dir.right.begin(), recv_by_dir.right.end());
 
     time_acc += MPI_Wtime() - t_mig_begin;
 }
@@ -441,14 +459,11 @@ StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const 
     AntSystem finished;
     finished.reserve(ants.size());
 
-    std::vector<TransitAnt> out_up;
-    std::vector<TransitAnt> out_down;
-    std::vector<TransitAnt> out_left;
-    std::vector<TransitAnt> out_right;
-    out_up.reserve(ants.size() / 8 + 8);
-    out_down.reserve(ants.size() / 8 + 8);
-    out_left.reserve(ants.size() / 8 + 8);
-    out_right.reserve(ants.size() / 8 + 8);
+    NeighborQueues outgoing;
+    NeighborQueues incoming;
+    NeighborQueues next_outgoing;
+    reserve_neighbor_queues(outgoing, ants.size() / 8 + 8);
+    reserve_neighbor_queues(next_outgoing, ants.size() / 8 + 8);
 
     double t_move_begin = MPI_Wtime();
     for (std::size_t i = 0; i < ants.size(); ++i) {
@@ -474,13 +489,13 @@ StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const 
             finished.add_ant(position_t{ant_x, ant_y}, static_cast<std::size_t>(ant_seed), ant_loaded);
         } else if (owner != MPI_PROC_NULL) {
             TransitAnt migrant{ant_x, ant_y, ant_seed, consumed, ant_loaded, 1};
-            route_ant_packet(decomp, migrant, owner, out_up, out_down, out_left, out_right);
+            route_ant_packet(decomp, migrant, owner, outgoing);
         }
     }
     result.move_local_time += MPI_Wtime() - t_move_begin;
 
     std::vector<TransitAnt> active;
-    exchange_migrants_with_neighbors(decomp, out_up, out_down, out_left, out_right, active, comm, result.migration_time);
+    exchange_migrants_with_neighbors(decomp, outgoing, incoming, active, comm, result.migration_time);
 
     int local_active = static_cast<int>(active.size());
     int global_active = 0;
@@ -488,29 +503,23 @@ StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const 
 
     while (global_active > 0) {
         t_move_begin = MPI_Wtime();
-
-        std::vector<TransitAnt> next_up;
-        std::vector<TransitAnt> next_down;
-        std::vector<TransitAnt> next_left;
-        std::vector<TransitAnt> next_right;
-        next_up.reserve(active.size() / 8 + 8);
-        next_down.reserve(active.size() / 8 + 8);
-        next_left.reserve(active.size() / 8 + 8);
-        next_right.reserve(active.size() / 8 + 8);
+        clear_neighbor_queues(next_outgoing);
+        const std::size_t needed_cap = active.size() / 8 + 8;
+        reserve_neighbor_queues(next_outgoing, needed_cap);
 
         for (TransitAnt& ant : active) {
             const int owner = process_single_ant(decomp, ctx, ant, result.food_collected_local, decomp.rank);
             if (owner == decomp.rank) {
                 finished.add_ant(position_t{ant.x, ant.y}, static_cast<std::size_t>(ant.seed), ant.loaded);
             } else {
-                route_ant_packet(decomp, ant, owner, next_up, next_down, next_left, next_right);
+                route_ant_packet(decomp, ant, owner, next_outgoing);
             }
         }
 
         result.move_local_time += MPI_Wtime() - t_move_begin;
 
         active.clear();
-        exchange_migrants_with_neighbors(decomp, next_up, next_down, next_left, next_right, active, comm, result.migration_time);
+        exchange_migrants_with_neighbors(decomp, next_outgoing, incoming, active, comm, result.migration_time);
 
         local_active = static_cast<int>(active.size());
         MPI_Allreduce(&local_active, &global_active, 1, MPI_INT, MPI_SUM, comm);
