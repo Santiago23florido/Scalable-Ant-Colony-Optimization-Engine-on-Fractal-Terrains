@@ -8,6 +8,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\usepackage{dblfloatfix}
 \usepackage{placeins}
 \usepackage{textcomp}
 \usepackage{xcolor}
@@ -15,9 +16,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Conference Paper Title*\\
-
-}
+\title{Parallel Performance Analysis of Ant Colony Optimization with OpenMP, MPI, and Hybrid Domain Decomposition}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
 \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
@@ -59,13 +58,11 @@ email address or ORCID}
 \maketitle
 
 \begin{abstract}
-This document is a model and instructions for \LaTeX.
-This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
+This document analyzes the parallel execution of an Ant Colony Optimization simulation over a fractal terrain. The study compares a shared-memory OpenMP implementation, a distributed-memory MPI implementation based on subdomain decomposition with halo exchange and ant migration, and a hybrid MPI+OpenMP variant that introduces intra-subdomain thread-level parallelism. The reported results focus on iteration time, computation time, rendering cost, and communication overhead across multiple colony sizes in order to identify the practical scalability limits of each model and the tradeoffs between computation and communication.
 \end{abstract}
 
 \begin{IEEEkeywords}
-component, formatting, style, styling, insert
+ant colony optimization, parallel computing, OpenMP, MPI, hybrid programming, domain decomposition
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -78,6 +75,6 @@ In this context, the imminent need emerges to incorporate scalability and parall
 \input{sections/subdomain.tex}
 
 \begin{thebibliography}{00}
-\bibitem{Dorigo} M. Dorigo, V. Maniezzo, and A. Colorni, ``Ant system: Optimization by a colony of cooperating agents,'' \textit{IEEE Transactions on Systems, Man, and Cybernetics---Part B: Cybernetics}, vol. 26, no. 1, pp. 29--41, Feb. 1996.\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
+\bibitem{Dorigo} M. Dorigo, V. Maniezzo, and A. Colorni, ``Ant system: Optimization by a colony of cooperating agents,'' \textit{IEEE Transactions on Systems, Man, and Cybernetics---Part B: Cybernetics}, vol. 26, no. 1, pp. 29--41, Feb. 1996.
 \end{thebibliography}
 \end{document}

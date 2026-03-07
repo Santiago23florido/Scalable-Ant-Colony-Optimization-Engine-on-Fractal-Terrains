@@ -141,6 +141,8 @@ When the number of ants is small, as in the case of a colony of 5000 ants, it is
 
 Nevertheless, it is evident that, unlike the case of parallelization with shared memory, there is an improvement in performance with the incorporation of processes which, although conditioned by the size of the buffers in which information is stored and also by the cost of communications, means that from the incorporation of more than one computation thread onward, the MPI parallelization shows, over the vast majority of the domain, a better performance per iteration than the OpenMP parallelization, as can be seen in Fig.~\ref{fig:mpi_vs_omp_calc_selected}.
 
+For a direct three-way comparison between OMP-only, MPI-only, and Hybrid MPI+OMP sweeps, the script \texttt{docs/scripts/plot\_compare\_omp\_mpi\_hybrid.py} generates the figures under \texttt{docs/figures/compare\_omp\_mpi\_hybrid/}.
+
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.90\columnwidth]{figures/compare_subdomain_omp/compare_calc_ants5000.png}
@@ -161,4 +163,58 @@ Nevertheless, it is evident that, unlike the case of parallelization with shared
 
 A relevant conclusion is that as has been discused the scaling of the subdomain strategy is jointly limited by communication growth and memory-traffic pressure in migration buffers as the process count and colony size increase. Consequently, although the inclusion of more processes improves performance over a broad operating region, the incremental gain per added process decreases at high process counts, which is consistent with the observed separation between the speedup with communication and the speedup without communication.
 
-\FloatBarrier
+\subsection{Hybrid distributed subdomain}
+Considering the particularities of the solution implemented over the subdomains, the implementation of a hybrid model for the ant colonies is proposed, given that the cost of increasing the number of subdomains using MPI parallelization became evident, but it also became evident that the increase in subdomains causes a considerable increase in the number of communication operations between subdomains. Within this framework, hybrid integration is proposed as a solution so that each one of the subdomains has threads that execute in parallel with shared memory using OpenMP, as contrasted in Fig.~\ref{fig:hybrid_compare_calc_selected}. The objective is not necessarily to reengineer the algorithm, but rather to integrate shared-memory threads within each subdomain in order to increase parallelism in the computation without incurring the already mentioned costly communication costs associated with an increase in the number of subdomains into which the fractal terrain is decomposed.
+
+\begin{figure}[!t]
+\centering
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png}
+    \\[-2mm]
+    {\footnotesize (a) OMP=2, 5000 ants}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png}
+    \\[-2mm]
+    {\footnotesize (b) OMP=3, 5000 ants}
+\end{minipage}
+
+\vspace{1mm}
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png}
+    \\[-2mm]
+    {\footnotesize (c) OMP=2, 40000 ants}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png}
+    \\[-2mm]
+    {\footnotesize (d) OMP=3, 40000 ants}
+\end{minipage}
+
+\vspace{1mm}
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png}
+    \\[-2mm]
+    {\footnotesize (e) OMP=2, 160000 ants}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png}
+    \\[-2mm]
+    {\footnotesize (f) OMP=3, 160000 ants}
+\end{minipage}
+\caption{Hybrid OMP-only vs MPI-only vs MPI+OpenMP computation-only comparison for selected colony sizes. The left column corresponds to two OpenMP threads per subdomain and the right column corresponds to three OpenMP threads per subdomain.}
+\label{fig:hybrid_compare_calc_selected}
+\end{figure}
+
+From the results of the hybrid implementation, it becomes evident that when two threads are implemented for each process, the computation execution-time results improve according to the number of processes, in most cases even more when the number of ants is larger and the increase in the parallel computing units favors the reduction of computation time. When the loads are medium or large, however, it is still evident that the fragmentation of the domain continues to cause significant increases in the time associated with migration, which means that although the computation time improves, the improvement is not sufficiently significant with respect to MPI parallelization when the total computation time is considered, as can be seen in the results for two threads per subdomain, which is the number of threads per subdomain that showed the best result in the test simulations.
+
+It is also worth highlighting that when the number of MPI processes is increased and, in addition, the number of threads per rank is increased, each thread receives very few ants and the cost of coordinating those threads begins to consume an important part of the computation time, as can be seen in Fig.~\ref{fig:hybrid_compare_calc_selected}. For this reason, in the implementation of the hybrid model, too many threads per process become inefficient when the local subdomain is no longer sufficiently large, because the useful work per thread is not sufficiently significant and the cost of coordination and distribution of the results grows disproportionately with respect to the performance gain that it provides in the computation.
