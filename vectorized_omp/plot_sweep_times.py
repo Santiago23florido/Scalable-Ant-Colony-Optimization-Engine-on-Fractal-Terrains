@@ -26,7 +26,8 @@ except ImportError as exc:
 
 
 SUMMARY_RE = re.compile(r"summary_threads(?P<threads>\d+)_ants(?P<ants>\d+)\.csv$")
-EXPECTED_ANTS = [5000, 10000 ,20000, 40000, 80000, 160000]
+EXPECTED_ANTS = [5000, 10000, 20000, 40000, 80000, 160000]
+EXPECTED_THREADS = list(range(2, 13))
 SweepData = Dict[int, Dict[int, Dict[str, float]]]
 
 
@@ -62,6 +63,8 @@ def load_data(results_dir: Path) -> SweepData:
             continue
         threads = int(match.group("threads"))
         ants = int(match.group("ants"))
+        if ants not in EXPECTED_ANTS or threads not in EXPECTED_THREADS:
+            continue
         metrics = read_summary(path)
         if "iteration_total" not in metrics:
             continue
@@ -74,10 +77,7 @@ def metric(metrics: Dict[str, float], key: str) -> float:
 
 
 def ordered_ant_sizes(keys: set[int]) -> list[int]:
-    ordered = [ants for ants in EXPECTED_ANTS if ants in keys]
-    extras = sorted(keys - set(EXPECTED_ANTS))
-    ordered.extend(extras)
-    return ordered
+    return [ants for ants in EXPECTED_ANTS if ants in keys]
 
 
 def plot_total_for_ant(data: SweepData, ants: int, out_path: Path, dpi: int) -> None:
@@ -185,6 +185,10 @@ def main() -> int:
     missing_expected = [ants for ants in EXPECTED_ANTS if ants not in data]
     if missing_expected:
         print(f"Warning: missing expected ant sizes in summaries: {missing_expected}", file=sys.stderr)
+    for ants in ordered_ant_sizes(set(data.keys())):
+        missing_threads = [t for t in EXPECTED_THREADS if t not in data[ants]]
+        if missing_threads:
+            print(f"Warning: ants={ants} missing thread counts: {missing_threads}", file=sys.stderr)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     generated = []

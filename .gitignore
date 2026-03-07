@@ -1,6 +1,9 @@
 # IDE
 .vscode/
 
+# LaTeX auxiliary output for report
+docs/.latex_aux/
+
 # Build directories (any project folder)
 **/build/
 **/cmake-build*/
@@ -30,4 +33,3 @@
 **/*.so.*
 **/*.dylib
 **/*.dll
-

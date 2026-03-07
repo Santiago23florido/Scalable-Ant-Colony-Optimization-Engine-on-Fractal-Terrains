@@ -13,9 +13,9 @@
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",
-  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp",
-  "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp",
-  "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o"
+  "command": "/usr/bin/mpic++  -I/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/include -isystem /usr/include/SDL2 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp",
+  "file": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp",
+  "output": "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o"
 },
 {
   "directory": "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build",

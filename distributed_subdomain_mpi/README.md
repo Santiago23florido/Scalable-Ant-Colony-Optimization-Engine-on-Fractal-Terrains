@@ -35,7 +35,7 @@ Start from `vectorized/` as base, then copy structure into this folder:
 - expose local/ghost indexing helpers
 - split border exchanges for pheromone channels
 
-3. `src/ant_system.cpp` and `include/ant_system.hpp`
+3. `src/population.cpp` and `include/population.hpp`
 - update ant advancement to detect out-of-subdomain moves
 - queue outbound ants by destination rank
 - remove local ants that migrated out
@@ -183,7 +183,7 @@ if iteration % monitor_period == 0:
 
 ## Functions That Must Change (Behavior)
 
-1. `advance_all(...)` in `AntSystem`
+1. `advance_all(...)` in `Population`
 - before: assumes all ants stay local
 - after: returns outbound migration buffers and local food increment
 

@@ -1,0 +1,83 @@
+% Build note:
+% Compile from docs/ with: latexmk -pdf report.tex
+% Aux files go to docs/.latex_aux via docs/.latexmkrc.
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Conference Paper Title*\\
+
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{4\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+}
+
+\maketitle
+
+\begin{abstract}
+This document is a model and instructions for \LaTeX.
+This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
+\end{abstract}
+
+\begin{IEEEkeywords}
+component, formatting, style, styling, insert
+\end{IEEEkeywords}
+
+\section{Introduction}
+The Ant Colony Optimization problem is one of the most widely studied metaheuristics for the simulation of collective behaviors in nature. The implementation of the algorithm is proposed from the definition of multiple artificial ants, either as a class or from the vector-based description of their properties. Each of these artificial entities makes movement decisions based on a combination of local heuristic information and a shared collective memory, usually modeled through an artificial pheromone. This optimization approach was introduced by Marco Dorigo in the 1990s \cite{Dorigo}.
+
+The importance of this optimization lies in its ability to address problems in which the search space grows rapidly and where exact methods face difficulties in terms of computational scalability. Nevertheless, in large-scale scenarios, not only because of the size of the ant colony but also due to the complexity of the map, limitations may arise in computation times and in the efficient handling of increasingly larger scales.
+
+In this context, the imminent need emerges to incorporate scalability and parallelization strategies for ACO, aimed at reducing the execution time of each algorithm by decreasing the computational load and facilitating the treatment of even larger entities. For this reason, the present document addresses parallelization with shared memory through OpenMP, as well as two different distributed-memory parallelization strategies using MPI, with the objective of improving the handling of large instances in the description of the collective behavior of ants.
+\input{sections/times.tex}
+\input{sections/subdomain.tex}
+
+\begin{thebibliography}{00}
+\bibitem{Dorigo} M. Dorigo, V. Maniezzo, and A. Colorni, ``Ant system: Optimization by a colony of cooperating agents,'' \textit{IEEE Transactions on Systems, Man, and Cybernetics---Part B: Cybernetics}, vol. 26, no. 1, pp. 29--41, Feb. 1996.\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
+\end{thebibliography}
+\end{document}

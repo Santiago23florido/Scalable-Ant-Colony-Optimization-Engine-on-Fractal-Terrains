@@ -1,0 +1,29 @@
+
+\subsection{Simulation times measurement
+}
+The measured times are defined so as to separate the simulation into clearly differentiated phases, which makes it possible to identify the contribution of each operation to the overall computational cost. In \texttt{event\_poll} (see Table~\ref{tab:timing_summary}), the time spent handling SDL events is recorded, including window closing, basic interaction, and event-queue updates; this corresponds to interface overhead rather than algorithmic work.
+
+In \texttt{ants\_advance} (Table~\ref{tab:timing_summary}), the behavioral core of the ants is measured, including movement decisions, neighboring pheromone reads, food transport, collection accounting, and pheromone marking. In \texttt{evaporation} (Table~\ref{tab:timing_summary}), only the pheromone evaporation stage is measured, which is characterized by ordered memory traversal and conditional evaporation logic and is therefore favorable for locality- and vectorization-based optimization. In \texttt{update} (Table~\ref{tab:timing_summary}), the consolidation of the pheromone state at the end of the step is included, together with buffer exchanges, restoration of special cells, reimposition of nest and food sources, and map maintenance. Finally, \texttt{advance\_total} (Table~\ref{tab:timing_summary}) provides the most representative measure of the simulation core cost because it integrates \texttt{ants\_advance}, \texttt{evaporation}, and \texttt{update}.
+
+In \texttt{render} (Table~\ref{tab:timing_summary}), the time required to draw the scene is measured, including the \texttt{blit} stage and the full screen-frame representation cost. All these contributions are ultimately included in \texttt{iteration\_total} (Table~\ref{tab:timing_summary}), which represents the complete cost of one simulation iteration.
+
+Additionally, general simulation information is stored, including the number of measured iterations, the final amount of food after the simulation ends, and the iteration at which the first food unit arrives.
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of measured execution times in the simulation.}
+\label{tab:timing_summary}
+\begin{tabular}{p{0.24\linewidth} p{0.68\linewidth}}
+\hline
+\textbf{Time metric} & \textbf{Brief description} \\
+\hline
+\texttt{event\_poll} & SDL event handling. \\
+\texttt{ants\_advance} & Ant movement and decisions. \\
+\texttt{evaporation} & Pheromone evaporation. \\
+\texttt{update} & State consolidation and restoration. \\
+\texttt{advance\_total} & Total simulation-core cost. \\
+\texttt{render} & Frame rendering time. \\
+\texttt{iteration\_total} & Total iteration time. \\
+\hline
+\end{tabular}
+\end{table}

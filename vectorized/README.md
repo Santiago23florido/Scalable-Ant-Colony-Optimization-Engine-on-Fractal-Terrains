@@ -4,7 +4,7 @@ This directory contains a vectorized refactor of the baseline ACO simulation.
 
 ## What Was Vectorized
 
-The original `ant` object-per-instance model was replaced by a structure-of-arrays (`AntSystem`) in `include/ant_system.hpp` and `src/ant_system.cpp`.
+The original `ant` object-per-instance model was replaced by a structure-of-arrays (`Population`) in `include/population.hpp` and `src/population.cpp`.
 
 The ant state is now stored in contiguous arrays:
 

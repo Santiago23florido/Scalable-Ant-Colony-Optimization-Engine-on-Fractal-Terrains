@@ -14,7 +14,7 @@
 #include <mpi.h>
 
 #include "../include/ant_migration.hpp"
-#include "../include/ant_system.hpp"
+#include "../include/population.hpp"
 #include "../include/fractal_land.hpp"
 #include "../include/halo.hpp"
 #include "../include/pheronome.hpp"
@@ -26,6 +26,8 @@ struct cli_options {
     bool headless = false;
     std::size_t max_iterations = 0;
     std::size_t warmup_iterations = 0;
+    std::size_t nb_ants = 0;
+    std::size_t post_first_food_iterations = 0;
     std::string timing_csv_path = "results/iter.csv";
     std::string summary_csv_path = "results/summary.csv";
 };
@@ -60,6 +62,8 @@ enum metric_idx {
     metric_count = 10,
 };
 
+constexpr std::size_t metrics_reduce_batch_size = 16;
+
 struct RenderAntPacket {
     int x;
     int y;
@@ -82,6 +86,9 @@ static void print_usage(const char* progname) {
         << "  --headless                    Disable SDL rendering/event loop.\n"
         << "  --max-iterations N            Stop automatically after N iterations (0 = infinite).\n"
         << "  --warmup-iterations N         Iterations to skip in timing stats (default: 0).\n"
+        << "  --nb-ants N                   Total ants globally (0 = default 1250 per MPI rank).\n"
+        << "  --post-first-food-iterations N\n"
+        << "                                Stop after N iterations once first food reaches the nest (0 = disabled).\n"
         << "  --timing-csv PATH             Write per-iteration timings to PATH (default: results/iter.csv).\n"
         << "  --summary-csv PATH            Write aggregated timing stats to PATH (default: results/summary.csv).\n"
         << "  --help                        Show this help message.\n";
@@ -121,6 +128,20 @@ static bool parse_cli(int argc, char* argv[], cli_options& opts) {
         if (arg == "--warmup-iterations") {
             if (i + 1 >= argc || !parse_size_t(argv[++i], opts.warmup_iterations)) {
                 std::cerr << "Invalid value for --warmup-iterations\n";
+                return false;
+            }
+            continue;
+        }
+        if (arg == "--nb-ants") {
+            if (i + 1 >= argc || !parse_size_t(argv[++i], opts.nb_ants)) {
+                std::cerr << "Invalid value for --nb-ants\n";
+                return false;
+            }
+            continue;
+        }
+        if (arg == "--post-first-food-iterations") {
+            if (i + 1 >= argc || !parse_size_t(argv[++i], opts.post_first_food_iterations)) {
+                std::cerr << "Invalid value for --post-first-food-iterations\n";
                 return false;
             }
             continue;
@@ -261,7 +282,7 @@ static void unpack_rank_packed_field(const mpi_subdomain::DomainDecomposition& d
     }
 }
 
-static void gather_state_for_render(const mpi_subdomain::DomainDecomposition& decomp, const std::vector<int>& gather_counts, const std::vector<int>& gather_displs, const pheronome& local_phen, const AntSystem& local_ants, pheronome* render_phen, AntSystem* render_ants, MPI_Comm comm) {
+static void gather_state_for_render(const mpi_subdomain::DomainDecomposition& decomp, const std::vector<int>& gather_counts, const std::vector<int>& gather_displs, const pheronome& local_phen, const Population& local_ants, pheronome* render_phen, Population* render_ants, MPI_Comm comm) {
     std::vector<double> local_dense_v1;
     std::vector<double> local_dense_v2;
     extract_local_interior(decomp, local_phen.current_channel(0), local_dense_v1);
@@ -385,7 +406,20 @@ int main(int argc, char* argv[]) {
     MPI_Comm comm = MPI_COMM_NULL;
     const auto decomp = mpi_subdomain::map_decomposed(global_dim, global_dim, world_comm, comm);
     const int rank = decomp.rank;
-    const int nb_ants = ants_per_rank * decomp.size;
+    const std::size_t default_nb_ants =
+        static_cast<std::size_t>(ants_per_rank) * static_cast<std::size_t>(decomp.size);
+    const std::size_t total_nb_ants = (opts.nb_ants > 0) ? opts.nb_ants : default_nb_ants;
+    if (total_nb_ants > static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+        if (rank == 0) {
+            std::cerr << "nb_ants is too large for current MPI packet format\n";
+        }
+        if (comm != MPI_COMM_NULL) {
+            MPI_Comm_free(&comm);
+        }
+        MPI_Finalize();
+        return 1;
+    }
+    const int nb_ants = static_cast<int>(total_nb_ants);
 
     const std::vector<int> gather_counts = decomp.gather_counts_cells();
     const std::vector<int> gather_displs = decomp.gather_displs_cells();
@@ -425,14 +459,14 @@ int main(int argc, char* argv[]) {
     mpi_subdomain::PheromoneHaloExchange halo_exchange_state;
     mpi_subdomain::exchange_pheromone_halos(decomp, local_phen.current_channel(0), local_phen.current_channel(1), comm);
 
-    AntSystem::set_exploration_coef(eps);
+    Population::set_exploration_coef(eps);
 
-    AntSystem ants;
+    Population ants;
     mpi_subdomain::distribute_initial_ants(decomp, nb_ants, ants_seed, ants, comm);
 
     std::unique_ptr<Window> win;
     std::unique_ptr<pheronome> render_phen;
-    std::unique_ptr<AntSystem> render_ants;
+    std::unique_ptr<Population> render_ants;
     std::unique_ptr<Renderer> renderer;
 
     if (rank == 0 && !opts.headless) {
@@ -443,8 +477,8 @@ int main(int argc, char* argv[]) {
 
         win = std::make_unique<Window>("Ant Simulation - Distributed MPI", 2 * global_dim + 10, global_dim + 266);
         render_phen = std::make_unique<pheronome>(static_cast<unsigned long>(global_dim), pos_food, pos_nest, alpha, beta);
-        render_ants = std::make_unique<AntSystem>();
-        render_ants->reserve(static_cast<std::size_t>(nb_ants));
+        render_ants = std::make_unique<Population>();
+        render_ants->reserve(total_nb_ants);
         renderer = std::make_unique<Renderer>(*global_land, *render_phen, pos_nest, pos_food, *render_ants);
     }
 
@@ -496,6 +530,77 @@ int main(int argc, char* argv[]) {
     std::size_t measured_iterations = 0;
     bool keep_running = true;
 
+    std::vector<double> local_metric_batch;
+    local_metric_batch.reserve(metrics_reduce_batch_size * metric_count);
+    std::vector<double> global_metric_batch;
+    std::vector<double> rank0_event_poll_batch;
+    std::vector<double> rank0_render_batch;
+    std::vector<double> rank0_blit_batch;
+    std::vector<std::uint64_t> rank0_food_batch;
+    std::vector<std::size_t> rank0_iteration_batch;
+    if (rank == 0) {
+        rank0_event_poll_batch.reserve(metrics_reduce_batch_size);
+        rank0_render_batch.reserve(metrics_reduce_batch_size);
+        rank0_blit_batch.reserve(metrics_reduce_batch_size);
+        rank0_food_batch.reserve(metrics_reduce_batch_size);
+        rank0_iteration_batch.reserve(metrics_reduce_batch_size);
+    }
+
+    auto flush_metric_batch = [&](bool force_flush) {
+        const std::size_t batch_count = local_metric_batch.size() / metric_count;
+        if (batch_count == 0) return;
+        if (!force_flush && batch_count < metrics_reduce_batch_size) return;
+
+        if (rank == 0) {
+            global_metric_batch.resize(batch_count * metric_count);
+        }
+
+        MPI_Reduce(local_metric_batch.data(), (rank == 0) ? global_metric_batch.data() : nullptr,
+                   static_cast<int>(batch_count * metric_count), MPI_DOUBLE, MPI_MAX, 0, comm);
+
+        if (rank == 0) {
+            for (std::size_t i = 0; i < batch_count; ++i) {
+                const std::size_t base = i * metric_count;
+                event_stats.add(rank0_event_poll_batch[i]);
+                ants_stats.add(global_metric_batch[base + metric_ants_advance]);
+                evaporation_stats.add(global_metric_batch[base + metric_evaporation]);
+                update_stats.add(global_metric_batch[base + metric_update]);
+                advance_total_stats.add(global_metric_batch[base + metric_advance_total]);
+                render_stats.add(rank0_render_batch[i]);
+                blit_stats.add(rank0_blit_batch[i]);
+                iteration_total_stats.add(global_metric_batch[base + metric_iteration_total]);
+                mpi_halo_stats.add(global_metric_batch[base + metric_mpi_halo]);
+                mpi_migration_stats.add(global_metric_batch[base + metric_mpi_migration]);
+                mpi_food_allreduce_stats.add(global_metric_batch[base + metric_mpi_food_allreduce]);
+                mpi_render_comm_stats.add(global_metric_batch[base + metric_mpi_render_comm]);
+                mpi_total_comm_stats.add(global_metric_batch[base + metric_mpi_total_comm]);
+
+                if (timing_csv) {
+                    timing_csv << rank0_iteration_batch[i] << "," << rank0_food_batch[i] << ","
+                               << rank0_event_poll_batch[i] << "," << global_metric_batch[base + metric_ants_advance]
+                               << "," << global_metric_batch[base + metric_evaporation] << ","
+                               << global_metric_batch[base + metric_update] << ","
+                               << global_metric_batch[base + metric_advance_total] << ","
+                               << rank0_render_batch[i] << "," << rank0_blit_batch[i] << ","
+                               << global_metric_batch[base + metric_iteration_total] << ","
+                               << global_metric_batch[base + metric_mpi_halo] << ","
+                               << global_metric_batch[base + metric_mpi_migration] << ","
+                               << global_metric_batch[base + metric_mpi_food_allreduce] << ","
+                               << global_metric_batch[base + metric_mpi_render_comm] << ","
+                               << global_metric_batch[base + metric_mpi_total_comm] << "\n";
+                }
+            }
+
+            rank0_event_poll_batch.clear();
+            rank0_render_batch.clear();
+            rank0_blit_batch.clear();
+            rank0_food_batch.clear();
+            rank0_iteration_batch.clear();
+        }
+
+        local_metric_batch.clear();
+    };
+
     while (true) {
         int local_stop = (g_stop_requested != 0) ? 1 : 0;
         int global_stop = 0;
@@ -505,6 +610,10 @@ int main(int argc, char* argv[]) {
         }
 
         if (rank == 0 && opts.max_iterations > 0 && it >= opts.max_iterations) {
+            keep_running = false;
+        }
+        if (rank == 0 && opts.post_first_food_iterations > 0 && first_food_iteration > 0 &&
+            it >= first_food_iteration + opts.post_first_food_iterations) {
             keep_running = false;
         }
 
@@ -544,6 +653,12 @@ int main(int argc, char* argv[]) {
         const auto step_result = mpi_subdomain::advance_ants_with_migration(decomp, step_ctx, ants, comm);
         const double ants_ms_local = step_result.move_local_time * 1000.0;
         const double migration_ms_local = step_result.migration_time * 1000.0;
+        const std::uint64_t local_food_delta = static_cast<std::uint64_t>(step_result.food_collected_local);
+        std::uint64_t global_food_delta = 0;
+        double food_allreduce_ms_local = 0.0;
+        MPI_Request food_allreduce_req = MPI_REQUEST_NULL;
+        MPI_Iallreduce(&local_food_delta, &global_food_delta, 1, MPI_UNSIGNED_LONG_LONG, MPI_SUM, comm,
+                       &food_allreduce_req);
 
         double evaporation_ms_local = 0.0;
         {
@@ -579,22 +694,19 @@ int main(int argc, char* argv[]) {
 
         const double advance_total_local = ants_ms_local + evaporation_ms_local + update_ms_local;
 
-        const std::uint64_t local_food_delta = static_cast<std::uint64_t>(step_result.food_collected_local);
-        std::uint64_t global_food_delta = 0;
-        double food_allreduce_ms_local = 0.0;
-        {
-            const double t0 = MPI_Wtime();
-            MPI_Allreduce(&local_food_delta, &global_food_delta, 1, MPI_UNSIGNED_LONG_LONG, MPI_SUM, comm);
-            food_allreduce_ms_local = (MPI_Wtime() - t0) * 1000.0;
-        }
-        food_quantity += global_food_delta;
-
         double render_comm_ms_local = 0.0;
         if (!opts.headless) {
             const double t0 = MPI_Wtime();
             gather_state_for_render(decomp, gather_counts, gather_displs, local_phen, ants, (rank == 0) ? render_phen.get() : nullptr, (rank == 0) ? render_ants.get() : nullptr, comm);
             render_comm_ms_local = (MPI_Wtime() - t0) * 1000.0;
         }
+
+        {
+            const double wait_t0 = MPI_Wtime();
+            MPI_Wait(&food_allreduce_req, MPI_STATUS_IGNORE);
+            food_allreduce_ms_local = (MPI_Wtime() - wait_t0) * 1000.0;
+        }
+        food_quantity += global_food_delta;
 
         double render_ms = 0.0;
         double blit_ms = 0.0;
@@ -626,9 +738,10 @@ int main(int argc, char* argv[]) {
             mpi_total_comm_local,
             iteration_total_ms_local,
         };
-        double global_metrics[metric_count] = {};
 
-        MPI_Reduce(local_metrics, global_metrics, metric_count, MPI_DOUBLE, MPI_MAX, 0, comm);
+        if (it > opts.warmup_iterations) {
+            local_metric_batch.insert(local_metric_batch.end(), std::begin(local_metrics), std::end(local_metrics));
+        }
 
         if (rank == 0) {
             if (first_food_iteration == 0 && food_quantity > 0) {
@@ -638,38 +751,20 @@ int main(int argc, char* argv[]) {
 
             if (it > opts.warmup_iterations) {
                 ++measured_iterations;
-
-                event_stats.add(event_poll_ms);
-                ants_stats.add(global_metrics[metric_ants_advance]);
-                evaporation_stats.add(global_metrics[metric_evaporation]);
-                update_stats.add(global_metrics[metric_update]);
-                advance_total_stats.add(global_metrics[metric_advance_total]);
-                render_stats.add(render_ms);
-                blit_stats.add(blit_ms);
-                iteration_total_stats.add(global_metrics[metric_iteration_total]);
-                mpi_halo_stats.add(global_metrics[metric_mpi_halo]);
-                mpi_migration_stats.add(global_metrics[metric_mpi_migration]);
-                mpi_food_allreduce_stats.add(global_metrics[metric_mpi_food_allreduce]);
-                mpi_render_comm_stats.add(global_metrics[metric_mpi_render_comm]);
-                mpi_total_comm_stats.add(global_metrics[metric_mpi_total_comm]);
-
-                if (timing_csv) {
-                    timing_csv << it << "," << food_quantity << "," << event_poll_ms << ","
-                               << global_metrics[metric_ants_advance] << "," << global_metrics[metric_evaporation]
-                               << "," << global_metrics[metric_update] << "," << global_metrics[metric_advance_total]
-                               << "," << render_ms << "," << blit_ms << ","
-                               << global_metrics[metric_iteration_total] << "," << global_metrics[metric_mpi_halo]
-                               << "," << global_metrics[metric_mpi_migration] << ","
-                               << global_metrics[metric_mpi_food_allreduce] << ","
-                               << global_metrics[metric_mpi_render_comm] << ","
-                               << global_metrics[metric_mpi_total_comm] << "\n";
-                    timing_csv.flush();
-                }
-
-                write_summary_csv_file(opts.summary_csv_path, event_stats, ants_stats, evaporation_stats, update_stats, advance_total_stats, render_stats, blit_stats, iteration_total_stats, mpi_halo_stats, mpi_migration_stats, mpi_food_allreduce_stats, mpi_render_comm_stats, mpi_total_comm_stats, it, measured_iterations, food_quantity, first_food_iteration);
+                rank0_iteration_batch.push_back(it);
+                rank0_food_batch.push_back(food_quantity);
+                rank0_event_poll_batch.push_back(event_poll_ms);
+                rank0_render_batch.push_back(render_ms);
+                rank0_blit_batch.push_back(blit_ms);
             }
         }
+
+        if (it > opts.warmup_iterations) {
+            flush_metric_batch(false);
+        }
     }
+
+    flush_metric_batch(true);
 
     if (rank == 0) {
         std::cout << std::fixed << std::setprecision(6);

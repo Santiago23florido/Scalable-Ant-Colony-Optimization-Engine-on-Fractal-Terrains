@@ -5,7 +5,7 @@
 #include <vector>
 #include <mpi.h>
 
-#include "../include/ant_system.hpp"
+#include "../include/population.hpp"
 #include "../include/basic_types.hpp"
 #include "../include/subdomain.hpp"
 
@@ -42,9 +42,9 @@ struct StepResult {
 };
 
 // Distributes initial ants from rank 0 to their owning subdomains.
-void distribute_initial_ants(const DomainDecomposition& decomp, int nb_ants, std::size_t global_seed, AntSystem& local_ants, MPI_Comm comm);
+void distribute_initial_ants(const DomainDecomposition& decomp, int nb_ants, std::size_t global_seed, Population& local_ants, MPI_Comm comm);
 
 // Advances local ants one step and migrates ants crossing subdomain borders.
-StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const StepContext& ctx, AntSystem& ants, MPI_Comm comm);
+StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const StepContext& ctx, Population& ants, MPI_Comm comm);
 
 }  // namespace mpi_subdomain
