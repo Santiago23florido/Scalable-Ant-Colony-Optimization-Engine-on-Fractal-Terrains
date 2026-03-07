@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.11.6)  7 MAR 2026 13:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.11.6)  7 MAR 2026 18:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -211,6 +211,23 @@ File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen173
 \Gin@req@width=\dimen174
+) (/usr/share/texlive/texmf-dist/tex/latex/dblfloatfix/dblfloatfix.sty
+Package: dblfloatfix 2012/12/31 v1.0a (JAW)
+ (/usr/share/texlive/texmf-dist/tex/latex/base/fixltx2e.sty
+Package: fixltx2e 2016/12/29 v2.1a fixes to LaTeX (obsolete)
+Applying: [2015/01/01] Old fixltx2e package on input line 46.
+
+
+Package fixltx2e Warning: fixltx2e is not required with releases after 2015
+(fixltx2e)                All fixes are now in the LaTeX kernel.
+(fixltx2e)                See the latexrelease package for details.
+
+Already applied: [0000/00/00] Old fixltx2e package on input line 53.
+)
+\@dblbotnum=\count284
+\c@dblbotnumber=\count285
+) (/usr/share/texlive/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
 ) (/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
@@ -231,39 +248,39 @@ Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
 ) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count284
+\l__color_backend_stack_int=\count286
 \l__pdf_internal_box=\box55
 ) (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
-LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
 
 -- Lines per column: 56 (exact).
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count285
+\scratchcounter=\count287
 \scratchdimen=\dimen175
 \scratchbox=\box56
-\nofMPsegments=\count286
-\nofMParguments=\count287
+\nofMPsegments=\count288
+\nofMParguments=\count289
 \everyMPshowfont=\toks24
-\MPscratchCnt=\count288
+\MPscratchCnt=\count290
 \MPscratchDim=\dimen176
-\MPnumerator=\count289
-\makeMPintoPDFobject=\count290
+\MPnumerator=\count291
+\makeMPintoPDFobject=\count292
 \everyMPtoPDFconversion=\toks25
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -283,7 +300,10 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
+) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}
+
+
+]
 Overfull \hbox (1.91866pt too wide) in paragraph at lines 24--24
 []\OT1/pcr/m/n/8 advance_total| 
  []
@@ -298,15 +318,12 @@ Overfull \hbox (3.83954pt too wide) in paragraph at lines 16--29
  [][] 
  []
 
-) (./sections/subdomain.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}
-
-
-]
+) (./sections/subdomain.tex
 Underfull \hbox (badness 1642) in paragraph at lines 23--24
 \OT1/ptm/m/n/10 ceived counts, it ex-changes the pay-load ar-rays through
  []
 
-
+[2]
 Underfull \hbox (badness 10000) in paragraph at lines 32--33
 []\OT1/pcr/m/n/10 mpi_migration \OT1/ptm/m/n/10 mea-sures the time spent within
  []
@@ -366,7 +383,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--35
 \OT1/pcr/m/n/10 mpi_total_comm\OT1/ptm/m/n/10 , which ac-counts for the frac-tion
  []
 
-[2]
+
 Overfull \hbox (5.99928pt too wide) in paragraph at lines 44--44
 []\OT1/pcr/m/n/8 mpi_halo_exchange| 
  []
@@ -380,63 +397,108 @@ Overfull \hbox (10.79929pt too wide) in paragraph at lines 46--46
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants5000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants5000.png>
 Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants5000.png  used on input line 61.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png, id=16, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png  used on input line 65.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png  used on input line 68.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png, id=17, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png  used on input line 69.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png  used on input line 76.
+(pdftex.def)             Requested size: 156.23877pt x 78.1188pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png, id=18, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png  used on input line 78.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png  used on input line 91.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png, id=19, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png  used on input line 82.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png  used on input line 98.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png, id=20, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png  used on input line 86.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png  used on input line 106.
+(pdftex.def)             Requested size: 156.23877pt x 78.1188pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png, id=21, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png  used on input line 95.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png  used on input line 118.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png, id=22, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png  used on input line 99.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png  used on input line 125.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png, id=23, 722.7pt x 361.35pt>
 File: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png Graphic file (type png)
 <use ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png>
-Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png  used on input line 103.
-(pdftex.def)             Requested size: 252.0pt x 126.00021pt.
-<figures/compare_subdomain_omp/compare_calc_ants5000.png, id=24, 867.24pt x 361.35pt>
+Package pdftex.def Info: ../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png  used on input line 133.
+(pdftex.def)             Requested size: 156.23877pt x 78.1188pt.
+[3 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png>]
+Underfull \hbox (badness 5970) in paragraph at lines 144--145
+[]\OT1/ptm/m/n/10 For a di-rect three-way com-par-i-son be-tween OMP-
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 144--145
+\OT1/pcr/m/n/10 docs/scripts/plot_compare_omp_mpi_hybrid.py
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 144--145
+\OT1/ptm/m/n/10 gen-er-ates the fig-ures un-der
+ []
+
+<figures/compare_subdomain_omp/compare_calc_ants5000.png, id=30, 867.24pt x 361.35pt>
 File: figures/compare_subdomain_omp/compare_calc_ants5000.png Graphic file (type png)
 <use figures/compare_subdomain_omp/compare_calc_ants5000.png>
-Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants5000.png  used on input line 114.
-(pdftex.def)             Requested size: 252.0pt x 104.99834pt.
-<figures/compare_subdomain_omp/compare_calc_ants40000.png, id=25, 867.24pt x 361.35pt>
+Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants5000.png  used on input line 148.
+(pdftex.def)             Requested size: 226.79846pt x 94.49464pt.
+<figures/compare_subdomain_omp/compare_calc_ants40000.png, id=31, 867.24pt x 361.35pt>
 File: figures/compare_subdomain_omp/compare_calc_ants40000.png Graphic file (type png)
 <use figures/compare_subdomain_omp/compare_calc_ants40000.png>
-Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants40000.png  used on input line 118.
-(pdftex.def)             Requested size: 252.0pt x 104.99834pt.
-<figures/compare_subdomain_omp/compare_calc_ants160000.png, id=26, 867.24pt x 361.35pt>
+Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants40000.png  used on input line 152.
+(pdftex.def)             Requested size: 226.79846pt x 94.49464pt.
+<figures/compare_subdomain_omp/compare_calc_ants160000.png, id=32, 867.24pt x 361.35pt>
 File: figures/compare_subdomain_omp/compare_calc_ants160000.png Graphic file (type png)
 <use figures/compare_subdomain_omp/compare_calc_ants160000.png>
-Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants160000.png  used on input line 122.
-(pdftex.def)             Requested size: 252.0pt x 104.99834pt.
-) [3 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_total_breakdown_ants160000.png>]
+Package pdftex.def Info: figures/compare_subdomain_omp/compare_calc_ants160000.png  used on input line 156.
+(pdftex.def)             Requested size: 226.79846pt x 94.49464pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png, id=33, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png  used on input line 173.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png, id=34, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png  used on input line 180.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png, id=35, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png  used on input line 188.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png, id=36, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png  used on input line 195.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png, id=37, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png  used on input line 203.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+<figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png, id=38, 722.7pt x 361.35pt>
+File: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png Graphic file (type png)
+<use figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png>
+Package pdftex.def Info: figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png  used on input line 210.
+(pdftex.def)             Requested size: 120.95892pt x 60.47481pt.
+[4 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png> <./figures/compare_subdomain_omp/compare_calc_ants5000.png> <./figures/compare_subdomain_omp/compare_calc_ants40000.png> <./figures/compare_subdomain_omp/compare_calc_ants160000.png>])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -448,27 +510,25 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4 <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_speedup_ants160000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants5000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants40000.png> <../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_calc_only_ants160000.png>] [5
-
- <./figures/compare_subdomain_omp/compare_calc_ants5000.png> <./figures/compare_subdomain_omp/compare_calc_ants40000.png> <./figures/compare_subdomain_omp/compare_calc_ants160000.png>] (./report.aux)
+[5 <./figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants5000.png> <./figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants5000.png> <./figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants40000.png> <./figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants40000.png> <./figures/compare_omp_mpi_hybrid/compare3_calc_omp2_ants160000.png> <./figures/compare_omp_mpi_hybrid/compare3_calc_omp3_ants160000.png>] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4341 strings out of 474222
- 74044 string characters out of 5748733
- 1943975 words of memory out of 5000000
- 26541 multiletter control sequences out of 15000+600000
- 603769 words of font info for 129 fonts, out of 8000000 for 9000
+ 4460 strings out of 474222
+ 79090 string characters out of 5748733
+ 1942975 words of memory out of 5000000
+ 26654 multiletter control sequences out of 15000+600000
+ 601652 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,11n,65p,1383b,334s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,11n,65p,1416b,334s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (5 pages, 759309 bytes).
+Output written on report.pdf (5 pages, 1018969 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
+ 83 PDF objects out of 1000 (max. 8388607)
  29 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 61 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 91 words of extra memory for PDF output out of 10000 (max. 10000000)
 
