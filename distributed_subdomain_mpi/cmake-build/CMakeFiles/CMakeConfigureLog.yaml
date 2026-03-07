@@ -464,3 +464,392 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_2e0dc/fast
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk'
+        /usr/bin/gmake  -f CMakeFiles/cmTC_2e0dc.dir/build.make CMakeFiles/cmTC_2e0dc.dir/build
+        gmake[2]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk'
+        Building CXX object CMakeFiles/cmTC_2e0dc.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_2e0dc.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk/test_mpi.cpp
+        [DESKTOP-PGG678M:2375738] opal_ifinit: socket() failed with errno=1
+        Linking CXX executable cmTC_2e0dc
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e0dc.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_2e0dc.dir/test_mpi.cpp.o -o cmTC_2e0dc 
+        [DESKTOP-PGG678M:2375751] opal_ifinit: socket() failed with errno=1
+        gmake[2]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk'
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-qZCKtk'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_a4c36/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_a4c36.dir/build.make CMakeFiles/cmTC_a4c36.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm'
+        Building CXX object CMakeFiles/cmTC_a4c36.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_a4c36.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm/test_mpi.cpp
+        Linking CXX executable cmTC_a4c36
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a4c36.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_a4c36.dir/test_mpi.cpp.o -o cmTC_a4c36 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-N8R3sm'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6a13e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_6a13e.dir/build.make CMakeFiles/cmTC_6a13e.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9'
+        Building CXX object CMakeFiles/cmTC_6a13e.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_6a13e.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9/test_mpi.cpp
+        Linking CXX executable cmTC_6a13e
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6a13e.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_6a13e.dir/test_mpi.cpp.o -o cmTC_6a13e 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-koj9s9'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_dc73b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_dc73b.dir/build.make CMakeFiles/cmTC_dc73b.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3'
+        Building CXX object CMakeFiles/cmTC_dc73b.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_dc73b.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3/test_mpi.cpp
+        Linking CXX executable cmTC_dc73b
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dc73b.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_dc73b.dir/test_mpi.cpp.o -o cmTC_dc73b 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-ZtnLY3'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_47b66/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_47b66.dir/build.make CMakeFiles/cmTC_47b66.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG'
+        Building CXX object CMakeFiles/cmTC_47b66.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_47b66.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG/test_mpi.cpp
+        Linking CXX executable cmTC_47b66
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_47b66.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_47b66.dir/test_mpi.cpp.o -o cmTC_47b66 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-B1nANG'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1ccad/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_1ccad.dir/build.make CMakeFiles/cmTC_1ccad.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r'
+        Building CXX object CMakeFiles/cmTC_1ccad.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_1ccad.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r/test_mpi.cpp
+        Linking CXX executable cmTC_1ccad
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1ccad.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_1ccad.dir/test_mpi.cpp.o -o cmTC_1ccad 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-tR4U8r'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_b8396/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_b8396.dir/build.make CMakeFiles/cmTC_b8396.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe'
+        Building CXX object CMakeFiles/cmTC_b8396.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_b8396.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe/test_mpi.cpp
+        Linking CXX executable cmTC_b8396
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b8396.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_b8396.dir/test_mpi.cpp.o -o cmTC_b8396 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-LidUGe'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_6074e/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_6074e.dir/build.make CMakeFiles/cmTC_6074e.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm'
+        Building CXX object CMakeFiles/cmTC_6074e.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_6074e.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm/test_mpi.cpp
+        Linking CXX executable cmTC_6074e
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6074e.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_6074e.dir/test_mpi.cpp.o -o cmTC_6074e 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-4dnSKm'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e4b50/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_e4b50.dir/build.make CMakeFiles/cmTC_e4b50.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz'
+        Building CXX object CMakeFiles/cmTC_e4b50.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_e4b50.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz/test_mpi.cpp
+        Linking CXX executable cmTC_e4b50
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e4b50.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_e4b50.dir/test_mpi.cpp.o -o cmTC_e4b50 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KjVHnz'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_df51f/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_df51f.dir/build.make CMakeFiles/cmTC_df51f.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ'
+        Building CXX object CMakeFiles/cmTC_df51f.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_df51f.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ/test_mpi.cpp
+        Linking CXX executable cmTC_df51f
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_df51f.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_df51f.dir/test_mpi.cpp.o -o cmTC_df51f 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-KI6miQ'
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1278 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/FindMPI.cmake:1672 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:20 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17"
+      binary: "/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_85340/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_85340.dir/build.make CMakeFiles/cmTC_85340.dir/build
+        gmake[1]: Entering directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17'
+        Building CXX object CMakeFiles/cmTC_85340.dir/test_mpi.cpp.o
+        /usr/bin/mpic++   -std=c++17 -o CMakeFiles/cmTC_85340.dir/test_mpi.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17/test_mpi.cpp
+        Linking CXX executable cmTC_85340
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_85340.dir/link.txt --verbose=1
+        /usr/bin/mpic++ CMakeFiles/cmTC_85340.dir/test_mpi.cpp.o -o cmTC_85340 
+        gmake[1]: Leaving directory '/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles/CMakeScratch/TryCompile-CzdC17'
+        
+      exitCode: 0
+...

@@ -4,7 +4,7 @@
 #include <limits>
 
 Renderer::Renderer(const fractal_land& land, const pheronome& phen, const position_t& pos_nest, const position_t& pos_food,
-                   const AntSystem& ants)
+                   const Population& ants)
     : m_ref_land(land),
       m_land(nullptr),
       m_ref_phen(phen),

@@ -97,19 +97,19 @@ CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.s: cmake_forc
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.s"
 	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_migration.cpp -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.s
 
-CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o: CMakeFiles/distributed_subdomain_mpi_sim.dir/flags.make
-CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o: /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp
-CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o: CMakeFiles/distributed_subdomain_mpi_sim.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o"
-	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o -MF CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o.d -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp
+CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o: CMakeFiles/distributed_subdomain_mpi_sim.dir/flags.make
+CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o: /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp
+CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o: CMakeFiles/distributed_subdomain_mpi_sim.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/cmake-build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o"
+	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o -MF CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o.d -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o -c /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp
 
-CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.i"
-	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp > CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.i
+CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.i"
+	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp > CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.i
 
-CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.s"
-	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/ant_system.cpp -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.s
+CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.s"
+	/usr/bin/mpic++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/population.cpp -o CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.s
 
 CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o: CMakeFiles/distributed_subdomain_mpi_sim.dir/flags.make
 CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o: /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/src/fractal_land.cpp
@@ -185,7 +185,7 @@ CMakeFiles/distributed_subdomain_mpi_sim.dir/src/window.cpp.s: cmake_force
 distributed_subdomain_mpi_sim_OBJECTS = \
 "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_simu.cpp.o" \
 "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.o" \
-"CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o" \
+"CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o" \
 "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o" \
 "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/halo.cpp.o" \
 "CMakeFiles/distributed_subdomain_mpi_sim.dir/src/renderer.cpp.o" \
@@ -197,7 +197,7 @@ distributed_subdomain_mpi_sim_EXTERNAL_OBJECTS =
 
 /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_simu.cpp.o
 /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_migration.cpp.o
-/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/ant_system.cpp.o
+/home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/population.cpp.o
 /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/fractal_land.cpp.o
 /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/halo.cpp.o
 /home/santiago/OS202/AntRefactor/distributed_subdomain_mpi/build/distributed_subdomain_mpi_sim: CMakeFiles/distributed_subdomain_mpi_sim.dir/src/renderer.cpp.o

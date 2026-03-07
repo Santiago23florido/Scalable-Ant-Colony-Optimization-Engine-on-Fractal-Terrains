@@ -23,7 +23,7 @@ find_package(SDL2 REQUIRED)
 add_executable(distributed_subdomain_mpi_sim
     src/ant_simu.cpp
     src/ant_migration.cpp
-    src/ant_system.cpp
+    src/population.cpp
     src/fractal_land.cpp
     src/halo.cpp
     src/renderer.cpp

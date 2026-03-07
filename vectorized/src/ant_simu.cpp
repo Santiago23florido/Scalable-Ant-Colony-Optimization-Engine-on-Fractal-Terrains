@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-#include "ant_system.hpp"
+#include "population.hpp"
 #include "fractal_land.hpp"
 #include "pheronome.hpp"
 #include "rand_generator.hpp"
@@ -120,7 +120,7 @@ static bool parse_cli(int argc, char* argv[], cli_options& opts) {
 }
 
 static advance_timing advance_time(const fractal_land& land, pheronome& phen, const position_t& pos_nest,
-                                   const position_t& pos_food, AntSystem& ants, std::size_t& food_counter) {
+                                   const position_t& pos_food, Population& ants, std::size_t& food_counter) {
     const auto t0 = std::chrono::steady_clock::now();
     ants.advance_all(phen, land, pos_food, pos_nest, food_counter);
     const auto t1 = std::chrono::steady_clock::now();
@@ -177,9 +177,9 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    AntSystem::set_exploration_coef(eps);
+    Population::set_exploration_coef(eps);
 
-    AntSystem ants;
+    Population ants;
     ants.reserve(static_cast<std::size_t>(nb_ants));
     auto gen_ant_pos = [&land, &seed]() { return rand_int32(0, static_cast<int>(land.dimensions() - 1), seed); };
     for (std::size_t i = 0; i < static_cast<std::size_t>(nb_ants); ++i) {

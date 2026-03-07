@@ -19,6 +19,8 @@ struct cli_options {
     bool headless = false;
     std::size_t max_iterations = 0;
     std::size_t warmup_iterations = 0;
+    std::size_t nb_ants = 5000;
+    std::size_t post_first_food_iterations = 0;
     std::string timing_csv_path = "results/iter.csv";
     std::string summary_csv_path = "results/summary.csv";
 };
@@ -58,6 +60,9 @@ static void print_usage(const char* progname) {
         << "  --headless                    Disable SDL rendering/event loop.\n"
         << "  --max-iterations N            Stop automatically after N iterations (0 = infinite).\n"
         << "  --warmup-iterations N         Iterations to skip in timing stats (default: 0).\n"
+        << "  --nb-ants N                   Total number of ants (default: 5000).\n"
+        << "  --post-first-food-iterations N\n"
+        << "                                Stop after N iterations once first food reaches the nest (0 = disabled).\n"
         << "  --timing-csv PATH             Write per-iteration timings to PATH (default: results/iter.csv).\n"
         << "  --summary-csv PATH            Write aggregated timing stats to PATH (default: results/summary.csv).\n"
         << "  --help                        Show this help message.\n";
@@ -92,6 +97,16 @@ static bool parse_cli(int argc, char* argv[], cli_options& opts) {
         } else if (arg == "--warmup-iterations") {
             if (i + 1 >= argc || !parse_size_t(argv[++i], opts.warmup_iterations)) {
                 std::cerr << "Invalid value for --warmup-iterations\n";
+                return false;
+            }
+        } else if (arg == "--nb-ants") {
+            if (i + 1 >= argc || !parse_size_t(argv[++i], opts.nb_ants) || opts.nb_ants == 0) {
+                std::cerr << "Invalid value for --nb-ants\n";
+                return false;
+            }
+        } else if (arg == "--post-first-food-iterations") {
+            if (i + 1 >= argc || !parse_size_t(argv[++i], opts.post_first_food_iterations)) {
+                std::cerr << "Invalid value for --post-first-food-iterations\n";
                 return false;
             }
         } else if (arg == "--timing-csv") {
@@ -152,7 +167,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::size_t seed = 2026;
-    const int nb_ants = 5000;
+    const std::size_t nb_ants = opts.nb_ants;
     const double eps = 0.8;
     const double alpha = 0.7;
     const double beta = 0.999;
@@ -180,9 +195,9 @@ int main(int argc, char* argv[]) {
     Population::set_exploration_coef(eps);
 
     Population ants;
-    ants.reserve(static_cast<std::size_t>(nb_ants));
+    ants.reserve(nb_ants);
     auto gen_ant_pos = [&land, &seed]() { return rand_int32(0, static_cast<int>(land.dimensions() - 1), seed); };
-    for (std::size_t i = 0; i < static_cast<std::size_t>(nb_ants); ++i) {
+    for (std::size_t i = 0; i < nb_ants; ++i) {
         ants.add_ant(position_t{gen_ant_pos(), gen_ant_pos()}, seed);
     }
 
@@ -241,7 +256,15 @@ int main(int argc, char* argv[]) {
     std::size_t it = 0;
     std::size_t measured_iterations = 0;
 
-    while (cont_loop && (opts.max_iterations == 0 || it < opts.max_iterations)) {
+    while (cont_loop) {
+        if (opts.max_iterations > 0 && it >= opts.max_iterations) {
+            break;
+        }
+        if (opts.post_first_food_iterations > 0 && first_food_iteration > 0 &&
+            it >= first_food_iteration + opts.post_first_food_iterations) {
+            break;
+        }
+
         ++it;
         const auto iter_begin = std::chrono::steady_clock::now();
 

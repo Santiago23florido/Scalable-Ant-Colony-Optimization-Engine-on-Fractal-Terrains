@@ -8,15 +8,11 @@
 namespace mpi_subdomain {
 
 namespace {
-
-constexpr int TAG_MIGRATION_COUNT_TO_UP = 900;
-constexpr int TAG_MIGRATION_COUNT_TO_DOWN = 901;
-constexpr int TAG_MIGRATION_COUNT_TO_LEFT = 902;
-constexpr int TAG_MIGRATION_COUNT_TO_RIGHT = 903;
-constexpr int TAG_MIGRATION_DATA_TO_UP = 910;
-constexpr int TAG_MIGRATION_DATA_TO_DOWN = 911;
-constexpr int TAG_MIGRATION_DATA_TO_LEFT = 912;
-constexpr int TAG_MIGRATION_DATA_TO_RIGHT = 913;
+constexpr int dir_count = 4;
+constexpr int dir_up = 0;
+constexpr int dir_down = 1;
+constexpr int dir_left = 2;
+constexpr int dir_right = 3;
 
 // Checks if a global x coordinate is inside the global map.
 inline bool in_global_x(const DomainDecomposition& decomp, int gx) {
@@ -311,89 +307,61 @@ void route_ant_packet(const DomainDecomposition& decomp, const TransitAnt& ant, 
     }
 }
 
-void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, NeighborQueues& send, NeighborQueues& recv_by_dir, std::vector<TransitAnt>& received, MPI_Comm comm, double& time_acc) {
-    int recv_count_up = 0;
-    int recv_count_down = 0;
-    int recv_count_left = 0;
-    int recv_count_right = 0;
-    const int send_count_up = static_cast<int>(send.up.size());
-    const int send_count_down = static_cast<int>(send.down.size());
-    const int send_count_left = static_cast<int>(send.left.size());
-    const int send_count_right = static_cast<int>(send.right.size());
-
+void exchange_migrants_with_neighbors(const DomainDecomposition& decomp, NeighborQueues& send,
+                                      std::vector<TransitAnt>& received, std::vector<TransitAnt>& send_flat,
+                                      std::vector<TransitAnt>& recv_flat, MPI_Comm comm, double& time_acc) {
+    (void)decomp;
     const double t_mig_begin = MPI_Wtime();
 
-    std::array<MPI_Request, 8> req_count{};
-    int req_count_n = 0;
-    if (decomp.up_rank != MPI_PROC_NULL) {
-        MPI_Irecv(&recv_count_up, 1, MPI_INT, decomp.up_rank, TAG_MIGRATION_COUNT_TO_DOWN, comm, &req_count[req_count_n++]);
-        MPI_Isend(&send_count_up, 1, MPI_INT, decomp.up_rank, TAG_MIGRATION_COUNT_TO_UP, comm, &req_count[req_count_n++]);
-    }
-    if (decomp.down_rank != MPI_PROC_NULL) {
-        MPI_Irecv(&recv_count_down, 1, MPI_INT, decomp.down_rank, TAG_MIGRATION_COUNT_TO_UP, comm, &req_count[req_count_n++]);
-        MPI_Isend(&send_count_down, 1, MPI_INT, decomp.down_rank, TAG_MIGRATION_COUNT_TO_DOWN, comm, &req_count[req_count_n++]);
-    }
-    if (decomp.left_rank != MPI_PROC_NULL) {
-        MPI_Irecv(&recv_count_left, 1, MPI_INT, decomp.left_rank, TAG_MIGRATION_COUNT_TO_RIGHT, comm, &req_count[req_count_n++]);
-        MPI_Isend(&send_count_left, 1, MPI_INT, decomp.left_rank, TAG_MIGRATION_COUNT_TO_LEFT, comm, &req_count[req_count_n++]);
-    }
-    if (decomp.right_rank != MPI_PROC_NULL) {
-        MPI_Irecv(&recv_count_right, 1, MPI_INT, decomp.right_rank, TAG_MIGRATION_COUNT_TO_LEFT, comm, &req_count[req_count_n++]);
-        MPI_Isend(&send_count_right, 1, MPI_INT, decomp.right_rank, TAG_MIGRATION_COUNT_TO_RIGHT, comm, &req_count[req_count_n++]);
-    }
-    if (req_count_n > 0) {
-        MPI_Waitall(req_count_n, req_count.data(), MPI_STATUSES_IGNORE);
+    std::array<int, dir_count> send_counts{};
+    send_counts[dir_up] = static_cast<int>(send.up.size());
+    send_counts[dir_down] = static_cast<int>(send.down.size());
+    send_counts[dir_left] = static_cast<int>(send.left.size());
+    send_counts[dir_right] = static_cast<int>(send.right.size());
+
+    std::array<int, dir_count> recv_counts{};
+    MPI_Neighbor_alltoall(send_counts.data(), 1, MPI_INT, recv_counts.data(), 1, MPI_INT, comm);
+
+    const std::size_t total_send = static_cast<std::size_t>(send_counts[dir_up] + send_counts[dir_down] +
+                                                            send_counts[dir_left] + send_counts[dir_right]);
+    send_flat.clear();
+    send_flat.reserve(total_send);
+    send_flat.insert(send_flat.end(), send.up.begin(), send.up.end());
+    send_flat.insert(send_flat.end(), send.down.begin(), send.down.end());
+    send_flat.insert(send_flat.end(), send.left.begin(), send.left.end());
+    send_flat.insert(send_flat.end(), send.right.begin(), send.right.end());
+
+    std::array<int, dir_count> send_counts_bytes{};
+    std::array<int, dir_count> recv_counts_bytes{};
+    std::array<int, dir_count> send_displs_bytes{};
+    std::array<int, dir_count> recv_displs_bytes{};
+
+    for (int i = 0; i < dir_count; ++i) {
+        send_counts_bytes[i] = send_counts[i] * static_cast<int>(sizeof(TransitAnt));
+        recv_counts_bytes[i] = recv_counts[i] * static_cast<int>(sizeof(TransitAnt));
     }
 
-    recv_by_dir.up.resize(static_cast<std::size_t>(recv_count_up));
-    recv_by_dir.down.resize(static_cast<std::size_t>(recv_count_down));
-    recv_by_dir.left.resize(static_cast<std::size_t>(recv_count_left));
-    recv_by_dir.right.resize(static_cast<std::size_t>(recv_count_right));
-
-    std::array<MPI_Request, 8> req_data{};
-    int req_data_n = 0;
-    if (decomp.up_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_by_dir.up.data(), recv_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.up_rank, TAG_MIGRATION_DATA_TO_DOWN, comm, &req_data[req_data_n++]);
-        MPI_Isend(send.up.data(), send_count_up * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.up_rank, TAG_MIGRATION_DATA_TO_UP, comm, &req_data[req_data_n++]);
-    }
-    if (decomp.down_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_by_dir.down.data(), recv_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.down_rank, TAG_MIGRATION_DATA_TO_UP, comm, &req_data[req_data_n++]);
-        MPI_Isend(send.down.data(), send_count_down * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.down_rank, TAG_MIGRATION_DATA_TO_DOWN, comm, &req_data[req_data_n++]);
-    }
-    if (decomp.left_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_by_dir.left.data(), recv_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.left_rank, TAG_MIGRATION_DATA_TO_RIGHT, comm, &req_data[req_data_n++]);
-        MPI_Isend(send.left.data(), send_count_left * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.left_rank, TAG_MIGRATION_DATA_TO_LEFT, comm, &req_data[req_data_n++]);
-    }
-    if (decomp.right_rank != MPI_PROC_NULL) {
-        MPI_Irecv(recv_by_dir.right.data(), recv_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.right_rank, TAG_MIGRATION_DATA_TO_LEFT, comm, &req_data[req_data_n++]);
-        MPI_Isend(send.right.data(), send_count_right * static_cast<int>(sizeof(TransitAnt)), MPI_BYTE,
-                  decomp.right_rank, TAG_MIGRATION_DATA_TO_RIGHT, comm, &req_data[req_data_n++]);
-    }
-    if (req_data_n > 0) {
-        MPI_Waitall(req_data_n, req_data.data(), MPI_STATUSES_IGNORE);
+    for (int i = 1; i < dir_count; ++i) {
+        send_displs_bytes[i] = send_displs_bytes[i - 1] + send_counts_bytes[i - 1];
+        recv_displs_bytes[i] = recv_displs_bytes[i - 1] + recv_counts_bytes[i - 1];
     }
 
-    received.clear();
-    received.reserve(static_cast<std::size_t>(recv_count_up + recv_count_down + recv_count_left + recv_count_right));
-    received.insert(received.end(), recv_by_dir.up.begin(), recv_by_dir.up.end());
-    received.insert(received.end(), recv_by_dir.down.begin(), recv_by_dir.down.end());
-    received.insert(received.end(), recv_by_dir.left.begin(), recv_by_dir.left.end());
-    received.insert(received.end(), recv_by_dir.right.begin(), recv_by_dir.right.end());
+    const std::size_t total_recv =
+        static_cast<std::size_t>(recv_counts[dir_up] + recv_counts[dir_down] + recv_counts[dir_left] + recv_counts[dir_right]);
+    recv_flat.resize(total_recv);
 
+    MPI_Neighbor_alltoallv(send_flat.empty() ? nullptr : send_flat.data(), send_counts_bytes.data(),
+                           send_displs_bytes.data(), MPI_BYTE, recv_flat.empty() ? nullptr : recv_flat.data(),
+                           recv_counts_bytes.data(), recv_displs_bytes.data(), MPI_BYTE, comm);
+
+    received.swap(recv_flat);
     time_acc += MPI_Wtime() - t_mig_begin;
 }
 
 }  // namespace
 
 // Generates ants on rank 0 and scatters them to owner ranks.
-void distribute_initial_ants(const DomainDecomposition& decomp, int nb_ants, std::size_t global_seed, AntSystem& local_ants, MPI_Comm comm) {
+void distribute_initial_ants(const DomainDecomposition& decomp, int nb_ants, std::size_t global_seed, Population& local_ants, MPI_Comm comm) {
     local_ants.clear();
 
     std::vector<int> send_counts;
@@ -453,17 +421,31 @@ void distribute_initial_ants(const DomainDecomposition& decomp, int nb_ants, std
 }
 
 // Advances all local ants and handles migration rounds until convergence.
-StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const StepContext& ctx, AntSystem& ants, MPI_Comm comm) {
+StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const StepContext& ctx, Population& ants, MPI_Comm comm) {
     StepResult result;
 
-    AntSystem finished;
+    Population finished;
     finished.reserve(ants.size());
 
-    NeighborQueues outgoing;
-    NeighborQueues incoming;
-    NeighborQueues next_outgoing;
-    reserve_neighbor_queues(outgoing, ants.size() / 8 + 8);
-    reserve_neighbor_queues(next_outgoing, ants.size() / 8 + 8);
+    // Reuse migration buffers across iterations to avoid repeated allocations.
+    static NeighborQueues outgoing;
+    static NeighborQueues next_outgoing;
+    static std::vector<TransitAnt> active;
+    static std::vector<TransitAnt> send_flat;
+    static std::vector<TransitAnt> recv_flat;
+
+    clear_neighbor_queues(outgoing);
+    clear_neighbor_queues(next_outgoing);
+    active.clear();
+    send_flat.clear();
+    recv_flat.clear();
+
+    const std::size_t reserve_cap = ants.size() / 8 + 8;
+    reserve_neighbor_queues(outgoing, reserve_cap);
+    reserve_neighbor_queues(next_outgoing, reserve_cap);
+    active.reserve(std::max(active.capacity(), reserve_cap));
+    send_flat.reserve(std::max(send_flat.capacity(), reserve_cap));
+    recv_flat.reserve(std::max(recv_flat.capacity(), reserve_cap));
 
     double t_move_begin = MPI_Wtime();
     for (std::size_t i = 0; i < ants.size(); ++i) {
@@ -494,12 +476,15 @@ StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const 
     }
     result.move_local_time += MPI_Wtime() - t_move_begin;
 
-    std::vector<TransitAnt> active;
-    exchange_migrants_with_neighbors(decomp, outgoing, incoming, active, comm, result.migration_time);
+    exchange_migrants_with_neighbors(decomp, outgoing, active, send_flat, recv_flat, comm, result.migration_time);
 
     int local_active = static_cast<int>(active.size());
     int global_active = 0;
-    MPI_Allreduce(&local_active, &global_active, 1, MPI_INT, MPI_SUM, comm);
+    MPI_Request active_req = MPI_REQUEST_NULL;
+    MPI_Iallreduce(&local_active, &global_active, 1, MPI_INT, MPI_SUM, comm, &active_req);
+    MPI_Wait(&active_req, MPI_STATUS_IGNORE);
+    constexpr int migration_global_check_period = 2;
+    int rounds_until_check = migration_global_check_period;
 
     while (global_active > 0) {
         t_move_begin = MPI_Wtime();
@@ -519,10 +504,18 @@ StepResult advance_ants_with_migration(const DomainDecomposition& decomp, const 
         result.move_local_time += MPI_Wtime() - t_move_begin;
 
         active.clear();
-        exchange_migrants_with_neighbors(decomp, next_outgoing, incoming, active, comm, result.migration_time);
+        exchange_migrants_with_neighbors(decomp, next_outgoing, active, send_flat, recv_flat, comm,
+                                         result.migration_time);
 
         local_active = static_cast<int>(active.size());
-        MPI_Allreduce(&local_active, &global_active, 1, MPI_INT, MPI_SUM, comm);
+        --rounds_until_check;
+        if (rounds_until_check == 0) {
+            MPI_Iallreduce(&local_active, &global_active, 1, MPI_INT, MPI_SUM, comm, &active_req);
+            MPI_Wait(&active_req, MPI_STATUS_IGNORE);
+            rounds_until_check = migration_global_check_period;
+        } else {
+            global_active = 1;
+        }
     }
 
     ants = std::move(finished);
