@@ -23,6 +23,12 @@ import sys
 from pathlib import Path
 from typing import Dict
 
+HELPER_DIR = Path(__file__).resolve().parents[1] / "docs" / "scripts"
+if str(HELPER_DIR) not in sys.path:
+    sys.path.insert(0, str(HELPER_DIR))
+
+from report_table_utils import ant_label, write_latex_apa_table
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as exc:
@@ -86,6 +92,10 @@ def mpi_compute_comm(metrics: Dict[str, float]) -> float:
         + metric(metrics, "mpi_migration")
         + metric(metrics, "mpi_food_allreduce")
     )
+
+
+def calc_metric(metrics: Dict[str, float]) -> float:
+    return metric(metrics, "advance_total") + mpi_compute_comm(metrics)
 
 
 def ordered_ant_sizes(keys: set[int]) -> list[int]:
@@ -216,6 +226,79 @@ def plot_calc_speedup_for_ant(data: SweepData, ants: int, out_path: Path, dpi: i
     plt.close(fig)
 
 
+def build_speedup_efficiency_rows(data: SweepData) -> tuple[list[str], list[list[str]], list[list[str]]]:
+    ant_sizes = ordered_ant_sizes(set(data.keys()))
+    procs = sorted({proc for ants in ant_sizes for proc in data[ants].keys()})
+    if not ant_sizes or not procs:
+        return [], [], []
+
+    speedup_rows: list[list[str]] = []
+    efficiency_rows: list[list[str]] = []
+
+    ant_labels = [ant_label(ants) for ants in ant_sizes]
+    for proc in procs:
+        speedup_row = [str(proc)]
+        efficiency_row = [str(proc)]
+        for ants in ant_sizes:
+            metrics = data[ants].get(proc)
+            if not metrics:
+                speedup_row.append("--")
+                efficiency_row.append("--")
+                continue
+
+            base_proc = sorted(data[ants].keys())[0]
+            base_calc = calc_metric(data[ants][base_proc])
+            current_calc = calc_metric(metrics)
+            if current_calc <= 0.0:
+                speedup_row.append("--")
+                efficiency_row.append("--")
+                continue
+
+            speedup = base_calc / current_calc
+            efficiency = speedup / (proc / base_proc)
+            speedup_row.append(f"{speedup:.2f}")
+            efficiency_row.append(f"{efficiency:.2f}")
+
+        speedup_rows.append(speedup_row)
+        efficiency_rows.append(efficiency_row)
+
+    return ant_labels, speedup_rows, efficiency_rows
+
+
+def write_speedup_efficiency_tables(data: SweepData, speedup_path: Path, efficiency_path: Path) -> list[Path]:
+    headers, speedup_rows, efficiency_rows = build_speedup_efficiency_rows(data)
+    if not headers:
+        return []
+
+    common_note = (
+        "The compute metric is $advance\\_total + mpi\\_halo\\_exchange + mpi\\_migration + "
+        "mpi\\_food\\_allreduce$, matching the MPI compute plots. Efficiency is computed with respect to the "
+        "number of compute MPI processes only; rendering is excluded from the process count. For each colony "
+        "size, the baseline is the smallest available MPI process count $p_0$."
+    )
+    write_latex_apa_table(
+        speedup_path,
+        caption="MPI compute speedup for all colony sizes and MPI process counts.",
+        label="tab:mpi_speedup",
+        headers=["Proc/Ants"] + headers,
+        rows=speedup_rows,
+        note=common_note + " Each cell reports speedup $S=T(p_0)/T(p)$.",
+        column_spec="l" + ("c" * len(headers)),
+        position="!htbp",
+    )
+    write_latex_apa_table(
+        efficiency_path,
+        caption="MPI compute efficiency for all colony sizes and MPI process counts.",
+        label="tab:mpi_efficiency",
+        headers=["Proc/Ants"] + headers,
+        rows=efficiency_rows,
+        note=common_note + " Each cell reports efficiency $E=S/(p/p_0)$.",
+        column_spec="l" + ("c" * len(headers)),
+        position="!htbp",
+    )
+    return [speedup_path, efficiency_path]
+
+
 def build_parser() -> argparse.ArgumentParser:
     root = Path(__file__).resolve().parent
     default_results = root / "results" / "sweeps_render_food10"
@@ -260,6 +343,14 @@ def main() -> int:
         generated.append(out_total)
         generated.append(out_calc)
         generated.append(out_speedup)
+
+    generated.extend(
+        write_speedup_efficiency_tables(
+            data,
+            args.output_dir / "mpi_speedup_table.tex",
+            args.output_dir / "mpi_efficiency_table.tex",
+        )
+    )
 
     print("Generated plots:")
     for path in generated:

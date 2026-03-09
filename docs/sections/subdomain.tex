@@ -80,7 +80,6 @@ It is therefore proposed to analyze the results of the MPI parallelization based
 \caption{MPI subdomain total iteration-time breakdown for selected colony sizes.}
 \label{fig:mpi_total_breakdown_selected}
 \end{figure}
-\FloatBarrier
 
 When the number of ants is small, as in the case of a colony of 5000 ants, it is possible to observe the effect produced by the incorporation of more processes in the acceleration of the computation, reaching a maximum close to 2 when communications between processes are considered. Nevertheless, when the speedup without communication is considered, a much more marked growth effect can be seen, reaching a speedup greater than 3 for 12 processes. However, this difference between the real speedup of the computation and the speedup without considering communication becomes increasingly larger as more subdomains are added in the representation of the fractal terrain and the communication between processes increases as depicted in Fig.~\ref{fig:mpi_speedup_selected} and Fig.~\ref{fig:mpi_calc_only_selected}. The growth in the size of the ant colony leads to similar dynamics in terms of speedup, showing reductions as the number of ants increases and revealing behaviors in which, despite corresponding to a larger number of processes, the linearity of the executed actions or the cost of memory-access operations due to the growth of the buffers causes the resulting effect in terms of speedup to be somewhat smaller than in the case of a colony size of 5000 ants.
 
@@ -107,7 +106,7 @@ When the number of ants is small, as in the case of a colony of 5000 ants, it is
     \\[-2mm]
     {\footnotesize (c) 160000 ants}
 \end{minipage}
-\caption{MPI subdomain computation speedup (with and without communication) for selected colony sizes.}
+\caption{MPI subdomain computation speedup (with and without communication) for selected colony sizes. The associated efficiency is computed with respect to compute MPI processes only, excluding rendering.}
 \label{fig:mpi_speedup_selected}
 \end{figure}
 
@@ -137,7 +136,8 @@ When the number of ants is small, as in the case of a colony of 5000 ants, it is
 \caption{MPI subdomain computation-only breakdown for selected colony sizes.}
 \label{fig:mpi_calc_only_selected}
 \end{figure}
-\FloatBarrier
+\input{../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_speedup_table.tex}
+\input{../distributed_subdomain_mpi/results/sweeps_render_food10/plots/mpi_efficiency_table.tex}
 
 Nevertheless, it is evident that, unlike the case of parallelization with shared memory, there is an improvement in performance with the incorporation of processes which, although conditioned by the size of the buffers in which information is stored and also by the cost of communications, means that from the incorporation of more than one computation thread onward, the MPI parallelization shows, over the vast majority of the domain, a better performance per iteration than the OpenMP parallelization, as can be seen in Fig.~\ref{fig:mpi_vs_omp_calc_selected}.
 
@@ -159,7 +159,6 @@ For a direct three-way comparison between OMP-only, MPI-only, and Hybrid MPI+OMP
 \caption{MPI subdomain vs OpenMP computation-only breakdown for selected colony sizes.}
 \label{fig:mpi_vs_omp_calc_selected}
 \end{figure}
-\FloatBarrier
 
 A relevant conclusion is that as has been discused the scaling of the subdomain strategy is jointly limited by communication growth and memory-traffic pressure in migration buffers as the process count and colony size increase. Consequently, although the inclusion of more processes improves performance over a broad operating region, the incremental gain per added process decreases at high process counts, which is consistent with the observed separation between the speedup with communication and the speedup without communication.
 
@@ -211,9 +210,15 @@ Considering the particularities of the solution implemented over the subdomains,
     \\[-2mm]
     {\footnotesize (f) OMP=3, 160000 ants}
 \end{minipage}
-\caption{Hybrid OMP-only vs MPI-only vs MPI+OpenMP computation-only comparison for selected colony sizes. The left column corresponds to two OpenMP threads per subdomain and the right column corresponds to three OpenMP threads per subdomain.}
+\caption{Hybrid OMP-only vs MPI-only vs MPI+OpenMP computation-only comparison for selected colony sizes. The left column corresponds to two OpenMP threads per subdomain and the right column corresponds to three OpenMP threads per subdomain. The associated efficiency is computed with respect to compute MPI processes only, excluding rendering.}
 \label{fig:hybrid_compare_calc_selected}
 \end{figure}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_speedup_omp2_table.tex}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_efficiency_omp2_table.tex}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_speedup_omp3_table.tex}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_efficiency_omp3_table.tex}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_speedup_omp4_table.tex}
+\input{../distributed_subdomain_hybrid_mpi_omp/results/sweeps_render_food10/plots/hybrid_efficiency_omp4_table.tex}
 
 From the results of the hybrid implementation, it becomes evident that when two threads are implemented for each process, the computation execution-time results improve according to the number of processes, in most cases even more when the number of ants is larger and the increase in the parallel computing units favors the reduction of computation time. When the loads are medium or large, however, it is still evident that the fragmentation of the domain continues to cause significant increases in the time associated with migration, which means that although the computation time improves, the improvement is not sufficiently significant with respect to MPI parallelization when the total computation time is considered, as can be seen in the results for two threads per subdomain, which is the number of threads per subdomain that showed the best result in the test simulations.
 
