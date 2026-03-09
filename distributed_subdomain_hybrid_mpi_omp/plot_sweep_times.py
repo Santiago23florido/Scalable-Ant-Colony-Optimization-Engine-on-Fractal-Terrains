@@ -19,6 +19,12 @@ import sys
 from pathlib import Path
 from typing import Dict
 
+HELPER_DIR = Path(__file__).resolve().parents[1] / "docs" / "scripts"
+if str(HELPER_DIR) not in sys.path:
+    sys.path.insert(0, str(HELPER_DIR))
+
+from report_table_utils import ant_label, write_latex_apa_table
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as exc:
@@ -93,6 +99,10 @@ def mpi_compute_comm(metrics: Dict[str, float]) -> float:
         + metric(metrics, "mpi_migration")
         + metric(metrics, "mpi_food_allreduce")
     )
+
+
+def calc_metric(metrics: Dict[str, float]) -> float:
+    return metric(metrics, "advance_total") + mpi_compute_comm(metrics)
 
 
 def plot_total_for_config(data: SweepData, ants: int, omp_threads: int, out_path: Path, dpi: int) -> None:
@@ -217,6 +227,108 @@ def plot_calc_speedup_for_config(data: SweepData, ants: int, omp_threads: int, o
     plt.close(fig)
 
 
+def build_speedup_efficiency_rows(
+    data: SweepData,
+) -> tuple[list[str], dict[int, list[list[str]]], dict[int, list[list[str]]]]:
+    ant_sizes = [ants for ants in EXPECTED_ANTS if ants in data]
+    omp_values = sorted({omp_threads for ants in ant_sizes for omp_threads in data[ants].keys()})
+    ranks = sorted(
+        {
+            rank
+            for ants in ant_sizes
+            for omp_threads in data[ants].keys()
+            for rank in data[ants][omp_threads].keys()
+        }
+    )
+    if not ant_sizes or not omp_values or not ranks:
+        return [], {}, {}
+
+    ant_labels = [ant_label(ants) for ants in ant_sizes]
+    speedup_tables: dict[int, list[list[str]]] = {}
+    efficiency_tables: dict[int, list[list[str]]] = {}
+
+    for omp_threads in omp_values:
+        speedup_rows: list[list[str]] = []
+        efficiency_rows: list[list[str]] = []
+        for rank in ranks:
+            speedup_row = [str(rank)]
+            efficiency_row = [str(rank)]
+            for ants in ant_sizes:
+                if omp_threads not in data[ants]:
+                    speedup_row.append("--")
+                    efficiency_row.append("--")
+                    continue
+
+                metrics = data[ants][omp_threads].get(rank)
+                if not metrics:
+                    speedup_row.append("--")
+                    efficiency_row.append("--")
+                    continue
+
+                base_rank = sorted(data[ants][omp_threads].keys())[0]
+                base_calc = calc_metric(data[ants][omp_threads][base_rank])
+                current_calc = calc_metric(metrics)
+                if current_calc <= 0.0:
+                    speedup_row.append("--")
+                    efficiency_row.append("--")
+                    continue
+
+                speedup = base_calc / current_calc
+                efficiency = speedup / (rank / base_rank)
+                speedup_row.append(f"{speedup:.2f}")
+                efficiency_row.append(f"{efficiency:.2f}")
+
+            speedup_rows.append(speedup_row)
+            efficiency_rows.append(efficiency_row)
+
+        speedup_tables[omp_threads] = speedup_rows
+        efficiency_tables[omp_threads] = efficiency_rows
+
+    return ant_labels, speedup_tables, efficiency_tables
+
+
+def write_speedup_efficiency_tables(data: SweepData, output_dir: Path) -> list[Path]:
+    headers, speedup_tables, efficiency_tables = build_speedup_efficiency_rows(data)
+    if not headers:
+        return []
+
+    common_note = (
+        "The compute metric is $advance\\_total + mpi\\_halo\\_exchange + mpi\\_migration + "
+        "mpi\\_food\\_allreduce$, matching the hybrid sweep plots. Efficiency is computed with respect to the "
+        "number of compute MPI processes only; rendering is excluded from the process count. For each "
+        "combination of colony size and OpenMP threads per rank, the baseline is the smallest available MPI "
+        "process count $p_0$."
+    )
+    generated: list[Path] = []
+    for omp_threads in sorted(speedup_tables):
+        speedup_path = output_dir / f"hybrid_speedup_omp{omp_threads}_table.tex"
+        efficiency_path = output_dir / f"hybrid_efficiency_omp{omp_threads}_table.tex"
+
+        write_latex_apa_table(
+            speedup_path,
+            caption=f"Hybrid MPI+OpenMP compute speedup for OMP={omp_threads} threads per rank.",
+            label=f"tab:hybrid_speedup_omp{omp_threads}",
+            headers=["Proc/Ants"] + headers,
+            rows=speedup_tables[omp_threads],
+            note=common_note + " Each cell reports speedup $S=T(p_0)/T(p)$.",
+            column_spec="l" + ("c" * len(headers)),
+            position="!htbp",
+        )
+        write_latex_apa_table(
+            efficiency_path,
+            caption=f"Hybrid MPI+OpenMP compute efficiency for OMP={omp_threads} threads per rank.",
+            label=f"tab:hybrid_efficiency_omp{omp_threads}",
+            headers=["Proc/Ants"] + headers,
+            rows=efficiency_tables[omp_threads],
+            note=common_note + " Each cell reports efficiency $E=S/(p/p_0)$.",
+            column_spec="l" + ("c" * len(headers)),
+            position="!htbp",
+        )
+        generated.extend([speedup_path, efficiency_path])
+
+    return generated
+
+
 def build_parser() -> argparse.ArgumentParser:
     root = Path(__file__).resolve().parent
     default_results = root / "results" / "sweeps_render_food10"
@@ -275,6 +387,8 @@ def main() -> int:
     if not generated:
         print("No plots generated; dataset is incomplete.", file=sys.stderr)
         return 1
+
+    generated.extend(write_speedup_efficiency_tables(data, args.output_dir))
 
     print("Generated plots:")
     for path in generated:

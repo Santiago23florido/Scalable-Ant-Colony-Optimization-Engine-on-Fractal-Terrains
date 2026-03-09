@@ -20,6 +20,12 @@ import sys
 from pathlib import Path
 from typing import Dict
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from report_table_utils import ant_label, fmt_value_with_unit, write_latex_table_snippet
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as exc:
@@ -33,6 +39,7 @@ SUMMARY_HYBRID_RE = re.compile(r"summary_ranks(?P<ranks>\d+)_omp(?P<omp>\d+)_ant
 EXPECTED_ANTS = [5000, 10000, 20000, 40000, 80000, 160000]
 EXPECTED_PAR_UNITS = list(range(2, 9))
 EXPECTED_HYBRID_OMP = [2, 3, 4]
+REPORT_SELECTED_ANTS = [5000, 40000, 160000]
 
 OmpData = Dict[int, Dict[int, Dict[str, float]]]
 MpiData = Dict[int, Dict[int, Dict[str, float]]]
@@ -293,6 +300,72 @@ def plot_calc(
     plt.close(fig)
 
 
+def write_report_summary_table(
+    omp_data: OmpData,
+    mpi_data: MpiData,
+    hybrid_data: HybridData,
+    out_path: Path,
+) -> bool:
+    rows: list[list[str]] = []
+
+    for ants in REPORT_SELECTED_ANTS:
+        hybrid_for_omp2 = hybrid_data.get(ants, {}).get(2)
+        hybrid_for_omp3 = hybrid_data.get(ants, {}).get(3)
+        if ants not in omp_data or ants not in mpi_data or not hybrid_for_omp2 or not hybrid_for_omp3:
+            continue
+
+        common_units = [
+            u
+            for u in EXPECTED_PAR_UNITS
+            if u in omp_data[ants] and u in mpi_data[ants] and u in hybrid_for_omp2 and u in hybrid_for_omp3
+        ]
+        if not common_units:
+            continue
+
+        best_omp = min(common_units, key=lambda u: m(omp_data[ants][u], "advance_total"))
+        best_mpi = min(
+            common_units,
+            key=lambda u: m(mpi_data[ants][u], "advance_total") + mpi_calc_comm(mpi_data[ants][u]),
+        )
+        best_h2 = min(
+            common_units,
+            key=lambda u: m(hybrid_for_omp2[u], "advance_total") + mpi_calc_comm(hybrid_for_omp2[u]),
+        )
+        best_h3 = min(
+            common_units,
+            key=lambda u: m(hybrid_for_omp3[u], "advance_total") + mpi_calc_comm(hybrid_for_omp3[u]),
+        )
+
+        best_values = {
+            "OMP": m(omp_data[ants][best_omp], "advance_total"),
+            "MPI": m(mpi_data[ants][best_mpi], "advance_total") + mpi_calc_comm(mpi_data[ants][best_mpi]),
+            "H2": m(hybrid_for_omp2[best_h2], "advance_total") + mpi_calc_comm(hybrid_for_omp2[best_h2]),
+            "H3": m(hybrid_for_omp3[best_h3], "advance_total") + mpi_calc_comm(hybrid_for_omp3[best_h3]),
+        }
+
+        rows.append(
+            [
+                ant_label(ants),
+                fmt_value_with_unit(best_values["OMP"], best_omp),
+                fmt_value_with_unit(best_values["MPI"], best_mpi),
+                fmt_value_with_unit(best_values["H2"], best_h2),
+                fmt_value_with_unit(best_values["H3"], best_h3),
+                min(best_values, key=best_values.get),
+            ]
+        )
+
+    if not rows:
+        return False
+
+    write_latex_table_snippet(
+        out_path,
+        headers=["Ants", "OMP", "MPI", "H2", "H3", "Best"],
+        rows=rows,
+        column_spec="lrrrrl",
+    )
+    return True
+
+
 def build_parser() -> argparse.ArgumentParser:
     repo_root = Path(__file__).resolve().parents[2]
     default_omp = repo_root / "vectorized_omp" / "results" / "sweeps_render_food10"
@@ -357,6 +430,10 @@ def main() -> int:
             plot_calc(ants, omp_threads, units, omp_data[ants], mpi_data[ants], hybrid_for_cfg, out_calc, args.dpi)
 
             generated.extend([out_total, out_calc])
+
+    table_path = args.output_dir / "compare3_calc_selected_table.tex"
+    if write_report_summary_table(omp_data, mpi_data, hybrid_data, table_path):
+        generated.append(table_path)
 
     if not generated:
         print("No comparison plots generated.", file=sys.stderr)

@@ -19,6 +19,12 @@ import sys
 from pathlib import Path
 from typing import Dict
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from report_table_utils import ant_label, fmt_value_with_unit, write_latex_table_snippet
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as exc:
@@ -28,6 +34,7 @@ except ImportError as exc:
 SUMMARY_RE = re.compile(r"summary_(?:threads|ranks)(?P<procs>\d+)_ants(?P<ants>\d+)\.csv$")
 EXPECTED_ANTS = [5000, 10000, 20000, 40000, 80000, 160000]
 EXPECTED_PROCS = list(range(2, 13))
+REPORT_SELECTED_ANTS = [5000, 40000, 160000]
 SweepData = Dict[int, Dict[int, Dict[str, float]]]
 
 
@@ -193,6 +200,52 @@ def plot_calc(
     plt.close(fig)
 
 
+def write_report_summary_table(
+    mpi_data: SweepData,
+    omp_data: SweepData,
+    out_path: Path,
+) -> bool:
+    rows: list[list[str]] = []
+
+    for ants in REPORT_SELECTED_ANTS:
+        if ants not in mpi_data or ants not in omp_data:
+            continue
+
+        common_procs = [p for p in EXPECTED_PROCS if p in mpi_data[ants] and p in omp_data[ants]]
+        if not common_procs:
+            continue
+
+        best_omp = min(common_procs, key=lambda p: m(omp_data[ants][p], "advance_total"))
+        best_mpi = min(
+            common_procs,
+            key=lambda p: m(mpi_data[ants][p], "advance_total") + mpi_calc_comm(mpi_data[ants][p]),
+        )
+
+        best_omp_ms = m(omp_data[ants][best_omp], "advance_total")
+        best_mpi_ms = m(mpi_data[ants][best_mpi], "advance_total") + mpi_calc_comm(mpi_data[ants][best_mpi])
+        winner = "OMP" if best_omp_ms < best_mpi_ms else "MPI"
+
+        rows.append(
+            [
+                ant_label(ants),
+                fmt_value_with_unit(best_omp_ms, best_omp),
+                fmt_value_with_unit(best_mpi_ms, best_mpi),
+                winner,
+            ]
+        )
+
+    if not rows:
+        return False
+
+    write_latex_table_snippet(
+        out_path,
+        headers=["Ants", "OMP [ms@t]", "MPI [ms@p]", "Best"],
+        rows=rows,
+        column_spec="lrrl",
+    )
+    return True
+
+
 def build_parser() -> argparse.ArgumentParser:
     repo_root = Path(__file__).resolve().parents[2]
     default_mpi = repo_root / "distributed_subdomain_mpi" / "results" / "sweeps_render_food10"
@@ -236,6 +289,10 @@ def main() -> int:
         plot_total(ants, common_procs, mpi_data[ants], omp_data[ants], out_total, args.dpi)
         plot_calc(ants, common_procs, mpi_data[ants], omp_data[ants], out_calc, args.dpi)
         generated.extend([out_total, out_calc])
+
+    table_path = args.output_dir / "compare_calc_selected_table.tex"
+    if write_report_summary_table(mpi_data, omp_data, table_path):
+        generated.append(table_path)
 
     if not generated:
         print("No common process/thread counts found for shared ant sizes.", file=sys.stderr)
